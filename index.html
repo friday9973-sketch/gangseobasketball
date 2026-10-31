@@ -14,6 +14,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Kakao JavaScript SDK -->
+    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" integrity="sha384-TiCUE00h649CAMonG018J2mUxP90v52QEGoNXNX4GYV1gF2b0200A40388zD20d8" crossorigin="anonymous"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -609,6 +611,13 @@
         const supabaseClient = (window.supabase && typeof window.supabase.createClient === 'function') 
             ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) 
             : null;
+
+        // --- 0-B. KAKAO SDK INITIALIZATION ---
+        const KAKAO_JS_KEY = "eca52552f65e9564a22aa8eeacef3208";
+        const APP_HOST_URL = "https://gangseobasketball.vercel.app";
+        if (window.Kakao && !window.Kakao.isInitialized()) {
+            window.Kakao.init(KAKAO_JS_KEY);
+        }
 
         // --- 1. LOCAL REACTIVE STATE (Identified by NAME only) ---
         let currentStudentName = "김지유";
@@ -1236,7 +1245,50 @@
 
         // --- 8. KAKAO SHARING & TOAST ---
         function executeKakaoSend() {
-            triggerToast(`[${currentStudentName}] 학부모님께 카카오톡 알림톡을 발송했습니다! 🚀`);
+            const student = students.find(s => s.name === currentStudentName) || students[0];
+            const studentRecs = records.filter(r => r.student === currentStudentName);
+            const summaryMetrics = studentRecs.slice(0, 3).map(r => `${r.metric}: ${r.score}${r.unit}`).join(" / ") || "자유투, 셔틀런, 서전트 측정 완료";
+
+            if (window.Kakao && window.Kakao.isInitialized()) {
+                try {
+                    window.Kakao.Share.sendDefault({
+                        objectType: 'feed',
+                        content: {
+                            title: `🏀 [강서초 농구부] ${student.name} 선수 훈련 성장 리포트`,
+                            description: `종합 성장 점수: ${student.score}점\n최근 기록: ${summaryMetrics}`,
+                            imageUrl: student.photo.startsWith('data:') ? 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400&auto=format&fit=crop&q=80' : student.photo,
+                            link: {
+                                mobileWebUrl: APP_HOST_URL,
+                                webUrl: APP_HOST_URL,
+                            },
+                        },
+                        buttons: [
+                            {
+                                title: '📊 상세 리포트 확인하기',
+                                link: {
+                                    mobileWebUrl: APP_HOST_URL,
+                                    webUrl: APP_HOST_URL,
+                                },
+                            },
+                        ],
+                    });
+                    triggerToast(`[${currentStudentName}] 학부모님께 카카오톡 메시지를 전송했습니다! 🚀`);
+                    return;
+                } catch (err) {
+                    console.warn("Kakao.Share.sendDefault notice:", err);
+                }
+            }
+
+            // Fallback for native Web Share API
+            if (navigator.share) {
+                navigator.share({
+                    title: `[강서초 농구부] ${student.name} 선수 훈련 리포트`,
+                    text: `종합 성장 점수: ${student.score}점\n최신 기록: ${summaryMetrics}`,
+                    url: APP_HOST_URL,
+                }).catch(() => {});
+            } else {
+                triggerToast(`[${currentStudentName}] 학부모님께 카카오톡 알림톡을 발송했습니다! 🚀`);
+            }
         }
 
         function shareKakaoDirect() {
