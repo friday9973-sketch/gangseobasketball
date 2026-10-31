@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="ko" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>강서초 스마트 농구부 AI 훈련 관리</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            950: '#070b19',
+                            900: '#0c1328',
+                            850: '#111b38',
+                            800: '#18244a',
+                            700: '#233263',
+                        },
+                        brand: {
+                            orange: '#f97316',
+                            gold: '#fbbf24',
+                            blue: '#3b82f6',
+                            cyan: '#06b6d4',
+                            emerald: '#10b981',
+                            kakao: '#fee500',
+                            kakaoBrown: '#3c1e1e'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard', 'Inter', '-apple-system', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        input, textarea, select {
+            user-select: text;
+        }
+        body {
+            background-color: #050814;
+            color: #f1f5f9;
+            font-family: 'Pretendard', sans-serif;
+            overflow: hidden;
+            touch-action: pan-y;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .safe-bottom {
+            padding-bottom: env(safe-area-inset-bottom, 12px);
+        }
+        .safe-top {
+            padding-top: env(safe-area-inset-top, 8px);
+        }
+        .card-glass {
+            background: rgba(17, 27, 56, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glow-orange {
+            box-shadow: 0 4px 20px -2px rgba(249, 115, 22, 0.35);
+        }
+        .glow-blue {
+            box-shadow: 0 4px 20px -2px rgba(59, 130, 246, 0.35);
+        }
+        .pulse-subtle {
+            animation: pulse-border 2s infinite;
+        }
+        @keyframes pulse-border {
+            0%, 100% { border-color: rgba(59, 130, 246, 0.3); }
+            50% { border-color: rgba(59, 130, 246, 0.9); }
+        }
+    </style>
+</head>
+<body class="h-full flex items-center justify-center p-0 sm:p-4">
+
+    <!-- Mobile Frame Wrapper (centered smartphone viewport) -->
+    <div class="relative w-full h-full sm:max-w-[420px] sm:h-[880px] bg-navy-950 sm:rounded-[42px] sm:border-[8px] sm:border-slate-800 shadow-2xl flex flex-col overflow-hidden sm:ring-1 sm:ring-white/10">
+
+        <!-- Mobile Status Bar (Visual embellishment) -->
+        <div class="safe-top bg-navy-950 px-6 pt-3 pb-1 flex justify-between items-center text-[11px] text-slate-400 font-medium z-30 select-none">
+            <span id="statusBarClock" class="font-semibold text-slate-200">09:41</span>
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-signal text-[10px]"></i>
+                <i class="fa-solid fa-wifi text-[10px]"></i>
+                <i class="fa-solid fa-battery-full text-xs text-emerald-400"></i>
+            </div>
+        </div>
+
+        <!-- Sticky App Header -->
+        <header class="bg-navy-950/95 backdrop-blur-md px-4 py-2.5 border-b border-white/5 flex items-center justify-between z-30">
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-400 flex items-center justify-center text-white shadow-md shadow-orange-500/20 text-base">
+                    <i class="fa-solid fa-basketball"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-1.5">
+                        <h1 class="text-sm font-extrabold text-white tracking-tight leading-none">강서초 농구부</h1>
+                        <span class="text-[9px] px-1.5 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold">AI</span>
+                    </div>
+                    <span class="text-[10px] text-slate-400">모바일 훈련 코칭</span>
+                </div>
+            </div>
+
+            <!-- Active Student Switcher Dropdown & Quick Add -->
+            <div class="flex items-center gap-2">
+                <div class="relative">
+                    <button onclick="toggleStudentModal()" class="flex items-center gap-1.5 bg-navy-850 hover:bg-navy-800 border border-slate-700/80 px-2.5 py-1.5 rounded-full text-xs font-semibold text-slate-200 transition-all active:scale-95">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span id="currentStudentPill" class="max-w-[70px] truncate">김지유</span>
+                        <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 ml-0.5"></i>
+                    </button>
+                </div>
+                <button onclick="openRecordModal()" class="w-8 h-8 rounded-full bg-blue-600 hover:bg-blue-500 active:scale-95 text-white flex items-center justify-center shadow-lg shadow-blue-500/30 text-xs transition-all">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Scrollable App Container -->
+        <main id="appScrollContainer" class="flex-1 overflow-y-auto hide-scrollbar pb-24 px-4 pt-3 space-y-4">
+
+            <!-- ================= VIEW 1: HOME (Dashboard) ================= -->
+            <div id="view-home" class="view-content space-y-4">
+                
+                <!-- Hero Player Status Card -->
+                <div class="card-glass rounded-3xl p-4 relative overflow-hidden shadow-xl border border-slate-700/50">
+                    <div class="absolute -right-6 -bottom-6 w-32 h-32 rounded-full bg-blue-500/10 blur-2xl pointer-events-none"></div>
+                    <div class="flex items-center gap-3.5 mb-3.5">
+                        <!-- Student Photo with Interactive Camera Upload Overlay -->
+                        <div class="relative flex-shrink-0 group">
+                            <img id="homePlayerImg" src="https://images.unsplash.com/photo-1546519638-68e109498ffc?w=160&auto=format&fit=crop&q=80" alt="선수" class="w-16 h-16 rounded-2xl object-cover border-2 border-amber-400/80 shadow-md transition-transform duration-200 group-hover:scale-105">
+                            
+                            <!-- Hidden File Input for Direct Photo Upload -->
+                            <input type="file" id="studentPhotoFileInput" accept="image/*" class="hidden" onchange="handleStudentPhotoUpload(event)">
+                            
+                            <!-- Camera Upload Button Badge -->
+                            <button type="button" onclick="triggerPhotoUploadDialog()" title="학생 사진 등록/변경" class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 text-navy-950 flex items-center justify-center shadow-lg border border-white/50 active:scale-90 transition-transform cursor-pointer">
+                                <i class="fa-solid fa-camera text-[11px]"></i>
+                            </button>
+                            
+                            <span class="absolute -top-1.5 -left-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-[9px] font-black text-navy-950 px-1.5 py-0.2 rounded-md shadow pointer-events-none">
+                                ★ 에이스
+                            </span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-1.5">
+                                <h2 id="homePlayerName" class="text-lg font-bold text-white truncate">김지유</h2>
+                                <span id="homePlayerPosition" class="text-[11px] px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-300 font-medium">가드</span>
+                            </div>
+                            <p id="homePlayerMeta" class="text-xs text-slate-400 mt-0.5">강서초 5학년 • 7번</p>
+                            <p id="homePlayerQuote" class="text-[11px] text-amber-300/90 mt-1 truncate">"성실한 노력으로 우리 팀을 이끄는 슈터!"</p>
+                        </div>
+                    </div>
+
+                    <!-- Growth Score Highlight -->
+                    <div class="bg-navy-950/70 border border-white/5 rounded-2xl p-3 flex items-center justify-between">
+                        <div>
+                            <span class="text-[11px] text-slate-400 block font-medium">종합 성장 점수</span>
+                            <div class="flex items-center gap-1.5 mt-0.5">
+                                <span class="text-2xl font-black text-amber-400 tracking-tight" id="homeScore">92</span>
+                                <span class="text-xs text-slate-400">점</span>
+                                <span class="text-[10px] font-bold text-emerald-400 bg-emerald-500/15 px-1.5 py-0.5 rounded-md">
+                                    <i class="fa-solid fa-arrow-trend-up"></i> +8점
+                                </span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[11px] text-slate-400 block font-medium">이번 달 훈련</span>
+                            <span class="text-base font-bold text-white mt-0.5 block">20회 완료</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Recent Metrics (Horizontal Scroll for Mobile Ergonomics) -->
+                <div>
+                    <div class="flex items-center justify-between mb-2 px-1">
+                        <span class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+                            <i class="fa-solid fa-fire text-orange-400"></i> 최근 측정 기록 (실시간)
+                        </span>
+                        <button onclick="openRecordModal()" class="text-[11px] text-blue-400 font-semibold active:text-blue-300">
+                            + 항목 추가
+                        </button>
+                    </div>
+
+                    <div id="homeMetricsScroll" class="flex gap-2.5 overflow-x-auto hide-scrollbar pb-1 -mx-4 px-4 snap-x">
+                        <!-- Injected dynamically -->
+                    </div>
+                </div>
+
+                <!-- AI Coach Speech Bubble -->
+                <div class="bg-gradient-to-r from-purple-900/40 via-indigo-900/30 to-navy-850 border border-purple-500/30 rounded-2xl p-3.5 shadow-lg relative">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-5 h-5 rounded-lg bg-purple-500/20 text-purple-300 flex items-center justify-center text-[10px]">
+                                <i class="fa-solid fa-robot"></i>
+                            </span>
+                            <span class="text-xs font-bold text-purple-200">AI 코치의 원포인트 레슨</span>
+                        </div>
+                        <button onclick="refreshAICoachTip()" class="text-[10px] text-purple-300/80 hover:text-purple-200 active:rotate-180 transition-transform">
+                            <i class="fa-solid fa-rotate-right"></i>
+                        </button>
+                    </div>
+                    <p id="homeAITip" class="text-xs text-slate-200 leading-relaxed font-normal">
+                        "지유 선수는 자유투 성공률(80%)과 셔틀런 지구력이 매우 우수해요! 다음 훈련에는 레이업 돌파 스텝에 집중해 봅시다! 💡"
+                    </p>
+                </div>
+
+                <!-- 3-Month Growth Chart -->
+                <div class="card-glass rounded-3xl p-4 shadow-xl border border-slate-700/50">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                            <i class="fa-solid fa-chart-line text-blue-400"></i> 3개월 성장 추이
+                        </span>
+                        <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full font-bold">
+                            전월 대비 +20% ↑
+                        </span>
+                    </div>
+                    <div class="h-44 w-full">
+                        <canvas id="mobileTrendChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Quick Action Buttons -->
+                <div class="grid grid-cols-2 gap-2.5">
+                    <button onclick="switchView('records')" class="card-glass hover:bg-navy-800 active:scale-95 p-3 rounded-2xl flex items-center gap-2.5 transition-all text-left">
+                        <div class="w-9 h-9 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-sm flex-shrink-0">
+                            <i class="fa-solid fa-stopwatch-20"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-bold text-white block">측정 기록하기</span>
+                            <span class="text-[10px] text-slate-400">셔틀런/서전트 등</span>
+                        </div>
+                    </button>
+                    <button onclick="switchView('kakao')" class="card-glass hover:bg-navy-800 active:scale-95 p-3 rounded-2xl flex items-center gap-2.5 transition-all text-left">
+                        <div class="w-9 h-9 rounded-xl bg-amber-400 text-navy-950 flex items-center justify-center text-sm flex-shrink-0 font-bold">
+                            <i class="fa-solid fa-comment"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-bold text-white block">카카오톡 전송</span>
+                            <span class="text-[10px] text-slate-400">학부모 리포트 공유</span>
+                        </div>
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- ================= VIEW 2: RECORDS (Dynamic Measurement by Name) ================= -->
+            <div id="view-records" class="view-content hidden space-y-4">
+                
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-base font-bold text-white">훈련 & 체력 측정 관리</h2>
+                        <p class="text-[11px] text-slate-400">이름 기준으로 어떤 종목이든 자유롭게 추가</p>
+                    </div>
+                    <button onclick="openRecordModal()" class="bg-blue-600 hover:bg-blue-500 active:scale-95 text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-blue-500/30">
+                        <i class="fa-solid fa-plus"></i> 새 측정 추가
+                    </button>
+                </div>
+
+                <!-- Filter & Selected Student Reminder -->
+                <div class="bg-navy-850 border border-slate-700/60 p-3 rounded-2xl flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-slate-400">선택 선수:</span>
+                        <span id="recordsActiveStudentBadge" class="text-xs font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-lg">김지유</span>
+                    </div>
+                    <div class="text-[11px] text-slate-400">
+                        총 <span id="recordsCount" class="text-white font-bold">0</span>건 등록됨
+                    </div>
+                </div>
+
+                <!-- Record Cards List for Phone -->
+                <div id="recordsListMobile" class="space-y-2.5">
+                    <!-- Injected dynamically -->
+                </div>
+
+            </div>
+
+            <!-- ================= VIEW 3: CONSULT (Voice AI Consultation) ================= -->
+            <div id="view-consult" class="view-content hidden space-y-4">
+                
+                <div class="text-left">
+                    <h2 class="text-base font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-microphone-lines text-purple-400"></i> 음성 상담 & AI 요약
+                    </h2>
+                    <p class="text-[11px] text-slate-400 mt-0.5">학부모 통화 및 현장 피드백을 녹음하면 AI가 자동 요약합니다.</p>
+                </div>
+
+                <!-- Voice Recording Mobile Hero Box -->
+                <div class="card-glass rounded-3xl p-5 border border-purple-500/30 space-y-4 text-center">
+                    <div class="flex justify-between items-center text-left">
+                        <div>
+                            <span class="text-xs font-bold text-purple-200 block">원터치 음성 상담 기록</span>
+                            <span class="text-[10px] text-slate-400">Gemini 3 Flash 요약 엔진 탑재</span>
+                        </div>
+                        <span id="recordingStatusPill" class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium">대기중</span>
+                    </div>
+
+                    <!-- Big Phone Ergonomic Microphone Button -->
+                    <div class="py-2 flex flex-col items-center justify-center">
+                        <button id="voiceRecordBtn" onclick="toggleVoiceRecording()" class="w-20 h-20 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-500 active:scale-90 text-white flex items-center justify-center text-2xl shadow-xl shadow-purple-600/40 border-4 border-purple-400/30 transition-all">
+                            <i id="voiceMicIcon" class="fa-solid fa-microphone"></i>
+                        </button>
+                        <span id="voiceRecordLabel" class="text-xs font-semibold text-slate-300 mt-3 block">마이크를 눌러 녹음 시작</span>
+                        <span class="text-[10px] text-slate-500 mt-0.5">(또는 직접 대화 내용을 아래에 입력하세요)</span>
+                    </div>
+
+                    <!-- Live Transcription Input -->
+                    <div class="space-y-2 text-left">
+                        <div class="flex items-center justify-between">
+                            <label class="text-[11px] font-semibold text-slate-300">음성 텍스트 / 상담 대화 내용</label>
+                            <button onclick="fillSampleTranscript()" class="text-[10px] text-blue-400 underline font-medium">예시 대화 불러오기</button>
+                        </div>
+                        <textarea id="voiceRawTranscript" rows="3" placeholder="녹음 버튼을 누르거나 상담 내용을 직접 적어주세요..." class="w-full bg-navy-950 border border-slate-700 rounded-2xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500"></textarea>
+                    </div>
+
+                    <button onclick="runMobileAiSummary()" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 active:scale-98 text-white py-3 rounded-2xl text-xs font-bold shadow-lg shadow-purple-500/25 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> AI로 핵심 요약 및 조치사항 추출
+                    </button>
+                </div>
+
+                <!-- Saved Consultation Notes Feed -->
+                <div class="space-y-2.5">
+                    <span class="text-xs font-bold text-slate-300 block px-1">최근 상담 기록 히스토리</span>
+                    <div id="consultNotesListMobile" class="space-y-2.5">
+                        <!-- Injected dynamically -->
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ================= VIEW 4: REPORT (Growth Report Card & Radar) ================= -->
+            <div id="view-report" class="view-content hidden space-y-4">
+                
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-base font-bold text-white">성장 리포트 카드</h2>
+                        <p class="text-[11px] text-slate-400">다각도 역량 분석 및 맞춤형 성장도</p>
+                    </div>
+                    <button onclick="shareKakaoDirect()" class="bg-amber-400 text-navy-950 px-3 py-1.5 rounded-xl text-xs font-bold active:scale-95 shadow">
+                        <i class="fa-solid fa-share-nodes"></i> 리포트 공유
+                    </button>
+                </div>
+
+                <!-- Radar Chart Card -->
+                <div class="card-glass rounded-3xl p-4 shadow-xl border border-slate-700/50">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                            <i class="fa-solid fa-chart-pie text-emerald-400"></i> 오각형 종합 능력 밸런스
+                        </span>
+                        <span class="text-[10px] text-slate-400">파란색: 현재 / 회색: 이전</span>
+                    </div>
+                    <div class="h-52 w-full flex items-center justify-center">
+                        <canvas id="mobileRadarChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Mobile Receipt Style Report Card -->
+                <div class="bg-gradient-to-b from-navy-850 to-navy-900 border border-slate-700/80 rounded-3xl p-4 shadow-xl space-y-3">
+                    <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                        <div class="flex items-center gap-2.5">
+                            <img id="reportCardImg" src="https://images.unsplash.com/photo-1546519638-68e109498ffc?w=160&auto=format&fit=crop&q=80" class="w-9 h-9 rounded-xl object-cover border border-amber-400 shadow">
+                            <div>
+                                <h3 id="reportCardName" class="text-sm font-bold text-white">김지유 선수 성장 분석서</h3>
+                                <span class="text-[10px] text-slate-400">강서초등학교 농구부 코칭팀 발행</span>
+                            </div>
+                        </div>
+                        <span class="text-xs font-black text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">GRADE A+</span>
+                    </div>
+
+                    <!-- Metrics Breakdown -->
+                    <div class="space-y-2 text-xs">
+                        <div class="flex justify-between py-1 border-b border-slate-800">
+                            <span class="text-slate-400">자유투 성공률</span>
+                            <span class="font-bold text-white">80% (목표 대비 100% 달성)</span>
+                        </div>
+                        <div class="flex justify-between py-1 border-b border-slate-800">
+                            <span class="text-slate-400">셔틀런 (왕복달리기)</span>
+                            <span class="font-bold text-emerald-400">78개 (초등 상위 5% 지구력)</span>
+                        </div>
+                        <div class="flex justify-between py-1 border-b border-slate-800">
+                            <span class="text-slate-400">드리블 코스 주파</span>
+                            <span class="font-bold text-white">12.3초 (-1.2초 단축 성공)</span>
+                        </div>
+                        <div class="flex justify-between py-1 border-b border-slate-800">
+                            <span class="text-slate-400">서전트 점프 높이</span>
+                            <span class="font-bold text-amber-400">46cm (탄력 우수)</span>
+                        </div>
+                    </div>
+
+                    <!-- AI Coach Comprehensive Comment -->
+                    <div class="bg-navy-950/80 p-3 rounded-2xl border border-purple-500/20 text-xs text-slate-300 leading-relaxed">
+                        <span class="text-[10px] text-purple-300 font-bold block mb-1">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> AI 총평
+                        </span>
+                        "지유 선수는 지구력과 슛 정확도가 빠르게 성장하고 있습니다. 실전 경기에서도 침착하게 본인의 강점을 발휘할 수 있도록 꾸준한 칭찬과 응원이 큰 힘이 됩니다."
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ================= VIEW 5: KAKAO (KakaoTalk Report Sending) ================= -->
+            <div id="view-kakao" class="view-content hidden space-y-4">
+                
+                <div class="text-left">
+                    <h2 class="text-base font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-paper-plane text-amber-400"></i> 학부모 카카오톡 리포트 전송
+                    </h2>
+                    <p class="text-[11px] text-slate-400 mt-0.5">측정된 데이터와 AI 분석 결과를 알림톡으로 발송합니다.</p>
+                </div>
+
+                <!-- Kakao Preview Box -->
+                <div class="bg-navy-900 border border-slate-700/80 rounded-3xl p-4 space-y-3 shadow-xl">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold text-amber-400 flex items-center gap-1.5">
+                            <i class="fa-solid fa-mobile-screen"></i> 알림톡 수신 화면 미리보기
+                        </span>
+                        <span class="text-[10px] text-slate-400">카카오 비즈메시지 규격</span>
+                    </div>
+
+                    <!-- Realistic Kakao Bubble -->
+                    <div class="bg-[#fee500] text-[#191919] p-4 rounded-2xl rounded-tl-sm text-xs space-y-2.5 shadow-md">
+                        <div class="flex items-center justify-between border-b border-black/10 pb-2">
+                            <div class="flex items-center gap-2">
+                                <img id="kakaoStudentThumb" src="https://images.unsplash.com/photo-1546519638-68e109498ffc?w=160&auto=format&fit=crop&q=80" class="w-6 h-6 rounded-full object-cover border border-black/20 shadow-sm">
+                                <span class="font-extrabold text-[13px] text-[#191919]">[강서초 농구부] 훈련 리포트</span>
+                            </div>
+                            <span class="text-[10px] text-black/60">알림톡 도착</span>
+                        </div>
+
+                        <p class="leading-relaxed font-normal">
+                            안녕하세요, <b id="kakaoTargetPlayer">김지유</b> 선수 학부모님!<br>
+                            강서초등학교 농구부 코칭스태프입니다.<br><br>
+                            이번 달 지유 선수의 <b>셔틀런(지구력)</b> 및 <b>자유투 측정</b> 결과가 최신 업데이트되었습니다.
+                        </p>
+
+                        <div class="bg-white/80 rounded-xl p-2.5 space-y-1 text-[11px]">
+                            <div class="flex justify-between">
+                                <span class="text-slate-600">종합 성장 점수:</span>
+                                <span class="font-bold text-blue-600" id="kakaoScorePreview">92점 (+8점 상승)</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-600">최근 측정 항목:</span>
+                                <span class="font-bold text-slate-800">자유투, 셔틀런, 서전트 점프</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-black/5 hover:bg-black/10 active:scale-98 rounded-xl py-2.5 text-center font-bold text-xs text-blue-800 cursor-pointer border border-black/10 transition-all">
+                            📊 상세 성장 리포트 웹페이지 열기
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kakao Send Button -->
+                <button onclick="executeKakaoSend()" class="w-full bg-[#fee500] hover:bg-[#ebd400] active:scale-98 text-[#3c1e1e] py-3.5 rounded-2xl font-black text-sm shadow-xl shadow-amber-400/20 flex items-center justify-center gap-2 transition-all">
+                    <i class="fa-solid fa-comment text-base"></i> 학부모 카카오톡으로 즉시 전송하기
+                </button>
+
+            </div>
+
+        </main>
+
+        <!-- Thumb-Friendly Bottom Navigation Bar (5 Items) -->
+        <nav class="safe-bottom bg-navy-950/95 backdrop-blur-md border-t border-white/10 px-2 py-1.5 flex items-center justify-around z-30 select-none">
+            <button onclick="switchView('home')" id="tab-home" class="nav-tab active flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-blue-400 font-bold transition-all">
+                <i class="fa-solid fa-house text-base"></i>
+                <span class="text-[10px] mt-1 font-semibold">홈</span>
+            </button>
+            <button onclick="switchView('records')" id="tab-records" class="nav-tab flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-slate-400 hover:text-white transition-all">
+                <i class="fa-solid fa-stopwatch text-base"></i>
+                <span class="text-[10px] mt-1 font-semibold">기록 측정</span>
+            </button>
+            <button onclick="switchView('consult')" id="tab-consult" class="nav-tab flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-slate-400 hover:text-white transition-all">
+                <i class="fa-solid fa-microphone text-base"></i>
+                <span class="text-[10px] mt-1 font-semibold">음성 상담</span>
+            </button>
+            <button onclick="switchView('report')" id="tab-report" class="nav-tab flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-slate-400 hover:text-white transition-all">
+                <i class="fa-solid fa-chart-column text-base"></i>
+                <span class="text-[10px] mt-1 font-semibold">리포트</span>
+            </button>
+            <button onclick="switchView('kakao')" id="tab-kakao" class="nav-tab flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-amber-400/80 hover:text-amber-400 transition-all">
+                <i class="fa-solid fa-paper-plane text-base"></i>
+                <span class="text-[10px] mt-1 font-semibold">카톡 전송</span>
+            </button>
+        </nav>
+
+        <!-- ================= MODALS (Optimized for Mobile Screens) ================= -->
+
+        <!-- MODAL 1: ADD MEASUREMENT (Name-based, Dynamic Metrics) -->
+        <div id="recordModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+            <div class="bg-navy-900 border-t sm:border border-slate-700/80 rounded-t-3xl sm:rounded-3xl w-full max-w-sm p-5 space-y-4 shadow-2xl animate-in slide-in-from-bottom duration-200">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center text-xs">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <h3 class="text-sm font-bold text-white">측정 항목 추가 및 기록</h3>
+                    </div>
+                    <button onclick="closeModal('recordModal')" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center text-xs">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <form id="recordMobileForm" onsubmit="handleMobileRecordSubmit(event)" class="space-y-3">
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-300 mb-1">선수 이름 (고유번호 없음)</label>
+                        <select id="modalStudentName" class="w-full bg-navy-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">측정 종목</label>
+                            <select id="modalMetricSelect" onchange="toggleCustomMetricField(this.value)" class="w-full bg-navy-950 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                                <option value="자유투 성공률">자유투 성공률</option>
+                                <option value="셔틀런 (왕복달리기)">셔틀런 (지구력)</option>
+                                <option value="드리블 기록">드리블 코스</option>
+                                <option value="서전트 점프">서전트 점프</option>
+                                <option value="레이업 성공률">레이업 성공률</option>
+                                <option value="custom">➕ 새로운 항목 직접 입력...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">측정 일자</label>
+                            <input type="date" id="modalRecordDate" required class="w-full bg-navy-950 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <!-- Custom Metric input (hidden by default) -->
+                    <div id="customMetricBox" class="hidden">
+                        <label class="block text-[11px] font-semibold text-slate-300 mb-1">새 측정 종목명 입력</label>
+                        <input type="text" id="modalCustomMetricName" placeholder="예: 5m 왕복달리기, 싯업 등" class="w-full bg-navy-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2">
+                        <div class="col-span-2">
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">측정 수치 & 단위</label>
+                            <div class="flex gap-1.5">
+                                <input type="number" step="any" id="modalScoreValue" placeholder="기록 (예: 80)" required class="w-3/5 bg-navy-950 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none">
+                                <input type="text" id="modalUnitValue" placeholder="단위 (%,초,개,cm)" required class="w-2/5 bg-navy-950 border border-slate-700 rounded-xl px-2 py-2 text-xs text-white focus:outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">목표치 (선택)</label>
+                            <input type="number" step="any" id="modalTargetValue" placeholder="목표" class="w-full bg-navy-950 border border-slate-700 rounded-xl px-2 py-2 text-xs text-white focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div class="pt-2 flex gap-2">
+                        <button type="button" onclick="closeModal('recordModal')" class="w-1/3 bg-slate-800 text-slate-300 py-2.5 rounded-xl text-xs font-semibold">취소</button>
+                        <button type="submit" class="w-2/3 bg-blue-600 hover:bg-blue-500 active:scale-98 text-white py-2.5 rounded-xl text-xs font-bold shadow-lg shadow-blue-500/25">
+                            기록 저장하기
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL 2: STUDENT SELECTION SHEET -->
+        <div id="studentSwitchModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+            <div class="bg-navy-900 border-t sm:border border-slate-700/80 rounded-t-3xl sm:rounded-3xl w-full max-w-sm p-5 space-y-3 shadow-2xl animate-in slide-in-from-bottom duration-200">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <h3 class="text-sm font-bold text-white">관리 선수 변경</h3>
+                    <button onclick="toggleStudentModal()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center text-xs">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div id="studentSelectList" class="space-y-2 max-h-60 overflow-y-auto hide-scrollbar">
+                    <!-- Injected dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Toast Notification -->
+        <div id="mobileToast" class="fixed top-14 left-1/2 -translate-x-1/2 z-50 bg-slate-900/95 border border-slate-700 text-white px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-2.5 transition-all duration-300 pointer-events-none opacity-0 -translate-y-4 max-w-[90%]">
+            <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+            <span id="toastMsg" class="text-xs font-medium truncate">완료되었습니다.</span>
+        </div>
+
+    </div>
+
+    <!-- Application Script -->
+    <script>
+        // --- 1. LOCAL REACTIVE STATE (Identified by NAME only) ---
+        let currentStudentName = "김지유";
+
+        let students = [
+            {
+                name: "김지유",
+                grade: "5학년",
+                number: "7번",
+                position: "가드",
+                score: 92,
+                quote: "정확한 3점슛과 날렵한 스틸 능력을 갖춘 강서초 에이스!",
+                photo: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=160&auto=format&fit=crop&q=80"
+            },
+            {
+                name: "박하은",
+                grade: "6학년",
+                number: "11번",
+                position: "센터",
+                score: 88,
+                quote: "안정적인 리바운드와 든든한 골밑 수비력의 기둥!",
+                photo: "https://images.unsplash.com/photo-1519766304817-4f37bda74a29?w=160&auto=format&fit=crop&q=80"
+            },
+            {
+                name: "이서아",
+                grade: "5학년",
+                number: "23번",
+                position: "포워드",
+                score: 85,
+                quote: "폭발적인 속공 돌파와 왕성한 체력을 자랑하는 스피드 스타!",
+                photo: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=160&auto=format&fit=crop&q=80"
+            }
+        ];
+
+        // Dynamic Records (Supports arbitrary metric names)
+        let records = [
+            { id: 1, student: "김지유", date: "2026-10-15", metric: "자유투 성공률", score: 80, unit: "%", target: 80 },
+            { id: 2, student: "김지유", date: "2026-10-15", metric: "셔틀런 (왕복달리기)", score: 78, unit: "개", target: 75 },
+            { id: 3, student: "김지유", date: "2026-10-14", metric: "드리블 기록", score: 12.3, unit: "초", target: 14 },
+            { id: 4, student: "김지유", date: "2026-10-12", metric: "서전트 점프", score: 46, unit: "cm", target: 45 },
+            { id: 5, student: "박하은", date: "2026-10-14", metric: "서전트 점프", score: 52, unit: "cm", target: 50 },
+            { id: 6, student: "박하은", date: "2026-10-13", metric: "자유투 성공률", score: 75, unit: "%", target: 80 },
+            { id: 7, student: "이서아", date: "2026-10-15", metric: "셔틀런 (왕복달리기)", score: 82, unit: "개", target: 80 },
+        ];
+
+        let consultHistory = [
+            {
+                id: 1,
+                student: "김지유",
+                date: "2026-10-12",
+                summary: "어머니와 전화 상담. 슛 폼 교정 후 지유의 자신감이 많이 향상되었다고 말씀하심.",
+                strength: "자유투 80% 달성 및 셔틀런 지구력 지속 향상",
+                action: "다음 주 친선 경기 1쿼터 선발 기용 및 학부모 참관 안내"
+            }
+        ];
+
+        let trendChart = null;
+        let radarChart = null;
+        let isRecording = false;
+
+        // --- 2. INITIALIZATION ---
+        window.onload = function() {
+            updateClock();
+            setInterval(updateClock, 10000);
+            document.getElementById('modalRecordDate').valueAsDate = new Date();
+            renderAllViews();
+            initCharts();
+        };
+
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const el = document.getElementById('statusBarClock');
+            if (el) el.innerText = `${hours}:${minutes}`;
+        }
+
+        // --- 3. VIEW SWITCHING ---
+        function switchView(viewName) {
+            document.querySelectorAll('.view-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active', 'text-blue-400');
+                tab.classList.add('text-slate-400');
+            });
+
+            const targetView = document.getElementById('view-' + viewName);
+            const targetTab = document.getElementById('tab-' + viewName);
+            if (targetView) targetView.classList.remove('hidden');
+            if (targetTab) {
+                targetTab.classList.remove('text-slate-400');
+                targetTab.classList.add('active', viewName === 'kakao' ? 'text-amber-400' : 'text-blue-400');
+            }
+
+            // Scroll container to top
+            document.getElementById('appScrollContainer').scrollTop = 0;
+
+            if (viewName === 'report' && radarChart) {
+                setTimeout(() => radarChart.resize(), 50);
+            }
+        }
+
+        // --- 4. RENDER ALL COMPONENTS ---
+        function renderAllViews() {
+            const s = students.find(st => st.name === currentStudentName) || students[0];
+
+            // Header & Pills
+            document.getElementById('currentStudentPill').innerText = s.name;
+            document.getElementById('recordsActiveStudentBadge').innerText = s.name;
+            document.getElementById('kakaoTargetPlayer').innerText = s.name;
+            document.getElementById('reportCardName').innerText = `${s.name} 선수 성장 분석서`;
+
+            // Home View
+            document.getElementById('homePlayerName').innerText = s.name;
+            document.getElementById('homePlayerPosition').innerText = s.position;
+            document.getElementById('homePlayerMeta').innerText = `강서초 ${s.grade} • ${s.number}`;
+            document.getElementById('homePlayerQuote').innerText = `"${s.quote}"`;
+            document.getElementById('homePlayerImg').src = s.photo;
+            
+            // Sync photos with Report & Kakao views
+            const reportImg = document.getElementById('reportCardImg');
+            if (reportImg) reportImg.src = s.photo;
+            const kakaoThumb = document.getElementById('kakaoStudentThumb');
+            if (kakaoThumb) kakaoThumb.src = s.photo;
+
+            document.getElementById('homeScore').innerText = s.score;
+            document.getElementById('kakaoScorePreview').innerText = `${s.score}점 (+8점 상승)`;
+
+            // Render Dynamic Horizontal Cards & Subviews
+            renderHomeMetrics(s.name);
+            renderRecordsMobileList(s.name);
+            renderConsultHistory(s.name);
+            renderStudentSelectionOptions();
+        }
+
+        // --- 4-B. STUDENT PHOTO UPLOAD HANDLER ---
+        function triggerPhotoUploadDialog() {
+            document.getElementById('studentPhotoFileInput').click();
+        }
+
+        function handleStudentPhotoUpload(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            // Check if file is image
+            if (!file.type.startsWith('image/')) {
+                triggerToast("이미지 파일(JPG, PNG 등)만 등록 가능합니다.", "error");
+                return;
+            }
+
+            // Client-side instant preview using FileReader
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Photo = e.target.result;
+                
+                // Update local in-memory student record
+                const currentStudent = students.find(s => s.name === currentStudentName);
+                if (currentStudent) {
+                    currentStudent.photo = base64Photo;
+                }
+
+                // Immediately update preview on home card and others
+                document.getElementById('homePlayerImg').src = base64Photo;
+                const reportImg = document.getElementById('reportCardImg');
+                if (reportImg) reportImg.src = base64Photo;
+                const kakaoThumb = document.getElementById('kakaoStudentThumb');
+                if (kakaoThumb) kakaoThumb.src = base64Photo;
+
+                // Also update the student switcher list thumbnail
+                renderStudentSelectionOptions();
+
+                // Simulated Supabase Storage upload notification
+                triggerToast(`[${currentStudentName}] 선수의 새 사진이 Supabase 저장소에 등록되었습니다! 📸`);
+            };
+            reader.readAsDataURL(file);
+
+            // Reset input so the same image can be re-selected if edited
+            event.target.value = "";
+        }
+
+        function renderHomeMetrics(studentName) {
+            const container = document.getElementById('homeMetricsScroll');
+            container.innerHTML = '';
+
+            const studentRecs = records.filter(r => r.student === studentName);
+            const listToDisplay = studentRecs.length > 0 ? studentRecs : [
+                { metric: "자유투 성공률", score: 80, unit: "%" },
+                { metric: "셔틀런", score: 78, unit: "개" },
+                { metric: "드리블 기록", score: 12.3, unit: "초" }
+            ];
+
+            const colors = [
+                { border: 'border-blue-500/30', bg: 'from-blue-600/20 to-blue-950/40', text: 'text-blue-400' },
+                { border: 'border-purple-500/30', bg: 'from-purple-600/20 to-purple-950/40', text: 'text-purple-400' },
+                { border: 'border-emerald-500/30', bg: 'from-emerald-600/20 to-emerald-950/40', text: 'text-emerald-400' },
+                { border: 'border-amber-500/30', bg: 'from-amber-600/20 to-amber-950/40', text: 'text-amber-400' }
+            ];
+
+            listToDisplay.forEach((r, idx) => {
+                const c = colors[idx % colors.length];
+                const card = document.createElement('div');
+                card.className = `flex-shrink-0 w-32 bg-gradient-to-b ${c.bg} border ${c.border} rounded-2xl p-3 snap-start shadow-md flex flex-col justify-between`;
+                card.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] text-slate-300 font-medium truncate">${r.metric}</span>
+                        <i class="fa-solid fa-chart-simple text-[10px] ${c.text}"></i>
+                    </div>
+                    <div class="mt-2">
+                        <span class="text-xl font-black text-white">${r.score}<span class="text-[10px] font-normal text-slate-400 ml-0.5">${r.unit}</span></span>
+                        <span class="text-[9px] text-emerald-400 block mt-0.5"><i class="fa-solid fa-arrow-trend-up"></i> 최신 기록</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderRecordsMobileList(studentName) {
+            const container = document.getElementById('recordsListMobile');
+            container.innerHTML = '';
+            const studentRecs = records.filter(r => r.student === studentName);
+            document.getElementById('recordsCount').innerText = studentRecs.length;
+
+            if (studentRecs.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-10 text-slate-500 text-xs">
+                        기록된 측정 결과가 없습니다.<br>상단 [+ 새 측정 추가] 버튼을 눌러 등록해 보세요!
+                    </div>
+                `;
+                return;
+            }
+
+            studentRecs.forEach(r => {
+                const item = document.createElement('div');
+                item.className = "bg-navy-850 border border-slate-700/60 p-3 rounded-2xl flex items-center justify-between shadow-sm";
+                item.innerHTML = `
+                    <div class="space-y-0.5">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-xs font-bold text-white">${r.metric}</span>
+                            <span class="text-[10px] text-slate-400">• ${r.date}</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="text-amber-400 font-extrabold">${r.score} ${r.unit}</span>
+                            ${r.target ? `<span class="text-[10px] text-slate-400">(목표: ${r.target}${r.unit})</span>` : ''}
+                        </div>
+                    </div>
+                    <button onclick="deleteRecordItem(${r.id})" class="w-7 h-7 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 flex items-center justify-center text-xs transition-colors">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function renderConsultHistory(studentName) {
+            const container = document.getElementById('consultNotesListMobile');
+            container.innerHTML = '';
+            const history = consultHistory.filter(c => c.student === studentName);
+
+            if (history.length === 0) {
+                container.innerHTML = `<div class="text-center py-6 text-slate-500 text-xs">저장된 상담 이력이 없습니다.</div>`;
+                return;
+            }
+
+            history.forEach(c => {
+                const el = document.createElement('div');
+                el.className = "bg-navy-850 border border-slate-700/60 p-3.5 rounded-2xl space-y-2 shadow-sm text-xs";
+                el.innerHTML = `
+                    <div class="flex items-center justify-between border-b border-slate-700 pb-1.5">
+                        <span class="font-bold text-purple-300"><i class="fa-solid fa-calendar-check mr-1"></i> ${c.date} 상담</span>
+                        <span class="text-[10px] text-slate-400">강서초 코치</span>
+                    </div>
+                    <div class="space-y-1 text-slate-200 text-[11px] leading-relaxed">
+                        <p><b class="text-white">📌 요약:</b> ${c.summary}</p>
+                        <p><b class="text-emerald-400">💡 강점:</b> ${c.strength}</p>
+                        <p><b class="text-blue-400">🎯 액션:</b> ${c.action}</p>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        function renderStudentSelectionOptions() {
+            const listContainer = document.getElementById('studentSelectList');
+            const modalSelect = document.getElementById('modalStudentName');
+
+            listContainer.innerHTML = '';
+            modalSelect.innerHTML = '';
+
+            students.forEach(s => {
+                // In modal select
+                modalSelect.innerHTML += `<option value="${s.name}">${s.name} (${s.grade} ${s.position})</option>`;
+
+                // In switch sheet
+                const btn = document.createElement('button');
+                btn.className = `w-full p-2.5 rounded-xl border flex items-center justify-between text-xs transition-all ${s.name === currentStudentName ? 'bg-blue-600/20 border-blue-500 text-white font-bold' : 'bg-navy-950 border-slate-700 text-slate-300'}`;
+                btn.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <img src="${s.photo}" class="w-7 h-7 rounded-full object-cover">
+                        <span>${s.name} (${s.grade})</span>
+                    </div>
+                    ${s.name === currentStudentName ? '<i class="fa-solid fa-check text-blue-400"></i>' : ''}
+                `;
+                btn.onclick = () => {
+                    currentStudentName = s.name;
+                    toggleStudentModal();
+                    renderAllViews();
+                    triggerToast(`${s.name} 선수로 전환되었습니다.`);
+                };
+                listContainer.appendChild(btn);
+            });
+
+            modalSelect.value = currentStudentName;
+        }
+
+        // --- 5. CHARTS (Optimized for Mobile Screens) ---
+        function initCharts() {
+            // Trend Line Chart
+            const trendCtx = document.getElementById('mobileTrendChart').getContext('2d');
+            trendChart = new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: ['8월', '9월', '10월'],
+                    datasets: [
+                        {
+                            label: '자유투 성공률 (%)',
+                            data: [60, 70, 80],
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            borderWidth: 2.5,
+                            tension: 0.35,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#3b82f6',
+                            fill: true
+                        },
+                        {
+                            label: '드리블 기록 (초)',
+                            data: [15.2, 14.0, 12.3],
+                            borderColor: '#fbbf24',
+                            borderWidth: 2,
+                            tension: 0.35,
+                            pointRadius: 3,
+                            pointBackgroundColor: '#fbbf24'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#94a3b8', font: { size: 10, family: 'Pretendard' }, boxWidth: 10 }
+                        }
+                    },
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#94a3b8', font: { size: 10 } } },
+                        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#94a3b8', font: { size: 10 } } }
+                    }
+                }
+            });
+
+            // Radar Chart
+            const radarCtx = document.getElementById('mobileRadarChart').getContext('2d');
+            radarChart = new Chart(radarCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['슈팅정확도', '드리블', '패스센스', '셔틀런(지구력)', '스피드'],
+                    datasets: [
+                        {
+                            label: '현재',
+                            data: [90, 85, 80, 88, 85],
+                            backgroundColor: 'rgba(59, 130, 246, 0.25)',
+                            borderColor: '#3b82f6',
+                            borderWidth: 2,
+                            pointBackgroundColor: '#3b82f6',
+                            pointRadius: 3
+                        },
+                        {
+                            label: '이전',
+                            data: [75, 70, 75, 76, 74],
+                            backgroundColor: 'rgba(148, 163, 184, 0.1)',
+                            borderColor: '#64748b',
+                            borderWidth: 1.5,
+                            pointBackgroundColor: '#64748b',
+                            pointRadius: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        r: {
+                            grid: { color: 'rgba(255, 255, 255, 0.08)' },
+                            angleLines: { color: 'rgba(255, 255, 255, 0.08)' },
+                            pointLabels: { color: '#cbd5e1', font: { size: 10, family: 'Pretendard' } },
+                            ticks: { display: false, max: 100 }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- 6. VOICE RECORDING & AI SUMMARY SIMULATION ---
+        function toggleVoiceRecording() {
+            const btn = document.getElementById('voiceRecordBtn');
+            const label = document.getElementById('voiceRecordLabel');
+            const pill = document.getElementById('recordingStatusPill');
+            const micIcon = document.getElementById('voiceMicIcon');
+            const transcript = document.getElementById('voiceRawTranscript');
+
+            if (!isRecording) {
+                isRecording = true;
+                btn.classList.add('pulse-subtle', 'ring-4', 'ring-red-500/50');
+                btn.classList.replace('from-purple-600', 'from-red-600');
+                micIcon.className = "fa-solid fa-stop text-white animate-pulse";
+                label.innerText = "녹음 진행 중... (마이크 탭하여 정지)";
+                label.classList.add('text-red-400');
+                pill.className = "text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full font-bold animate-pulse";
+                pill.innerText = "● LIVE RECORDING";
+
+                // Simulate speech transcription streaming
+                transcript.value = "녹음 중: ";
+                const words = [
+                    "코치님 안녕하세요!",
+                    "지유가 집에서 셔틀런 기록 오른 걸",
+                    "엄청 자랑하더라고요.",
+                    "다음 주 주말 친선 시합 때",
+                    "학부모 관람이 가능한지 여쭤봅니다."
+                ];
+                let idx = 0;
+                window.voiceTimer = setInterval(() => {
+                    if (idx < words.length) {
+                        transcript.value += " " + words[idx];
+                        idx++;
+                    }
+                }, 600);
+
+            } else {
+                isRecording = false;
+                clearInterval(window.voiceTimer);
+                btn.classList.remove('pulse-subtle', 'ring-4', 'ring-red-500/50');
+                btn.classList.replace('from-red-600', 'from-purple-600');
+                micIcon.className = "fa-solid fa-microphone text-white";
+                label.innerText = "녹음 완료! 아래 AI 요약 버튼을 눌러주세요.";
+                label.classList.remove('text-red-400');
+                pill.className = "text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold";
+                pill.innerText = "✓ 녹음 텍스트 완료";
+                triggerToast("음성 인식이 성공적으로 완료되었습니다.");
+            }
+        }
+
+        function fillSampleTranscript() {
+            document.getElementById('voiceRawTranscript').value = 
+                "코치님 안녕하세요! 지유가 최근 슛 연습이랑 셔틀런 달리기 체력 훈련에 재미를 많이 붙였습니다. 다음 주말 경기 때 출전 계획이 어떻게 되는지 궁금합니다.";
+            triggerToast("예시 대화문이 입력되었습니다.");
+        }
+
+        function runMobileAiSummary() {
+            const raw = document.getElementById('voiceRawTranscript').value.trim();
+            if (!raw) {
+                triggerToast("먼저 대화 내용을 녹음하거나 입력하세요.", "error");
+                return;
+            }
+
+            triggerToast("Gemini AI가 핵심 요약을 생성 중입니다...");
+
+            setTimeout(() => {
+                const newNote = {
+                    id: Date.now(),
+                    student: currentStudentName,
+                    date: new Date().toISOString().slice(0, 10),
+                    summary: `학부모님께서 ${currentStudentName} 선수의 체력 및 슛 연습 태도에 만족해하심. 다음 주말 경기 출전 여부 문의.`,
+                    strength: "셔틀런 지구력 및 슈팅 집중도 우수",
+                    action: "주말 경기 1쿼터 출전 일정 안내 및 격려 문자 전달"
+                };
+
+                consultHistory.unshift(newNote);
+                renderConsultHistory(currentStudentName);
+                triggerToast("AI 요약이 성공적으로 저장되었습니다!");
+                document.getElementById('voiceRawTranscript').value = "";
+                document.getElementById('recordingStatusPill').innerText = "대기중";
+                document.getElementById('recordingStatusPill').className = "text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium";
+            }, 800);
+        }
+
+        // --- 7. DYNAMIC MEASUREMENT MODAL ACTIONS ---
+        function openRecordModal() {
+            document.getElementById('modalStudentName').value = currentStudentName;
+            document.getElementById('recordModal').classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function toggleStudentModal() {
+            const m = document.getElementById('studentSwitchModal');
+            m.classList.toggle('hidden');
+        }
+
+        function toggleCustomMetricField(val) {
+            const box = document.getElementById('customMetricBox');
+            if (val === 'custom') {
+                box.classList.remove('hidden');
+                document.getElementById('modalCustomMetricName').required = true;
+            } else {
+                box.classList.add('hidden');
+                document.getElementById('modalCustomMetricName').required = false;
+            }
+        }
+
+        function handleMobileRecordSubmit(e) {
+            e.preventDefault();
+            const student = document.getElementById('modalStudentName').value;
+            let metric = document.getElementById('modalMetricSelect').value;
+            if (metric === 'custom') {
+                metric = document.getElementById('modalCustomMetricName').value.trim();
+            }
+            const date = document.getElementById('modalRecordDate').value;
+            const score = parseFloat(document.getElementById('modalScoreValue').value);
+            const unit = document.getElementById('modalUnitValue').value.trim();
+            const target = document.getElementById('modalTargetValue').value ? parseFloat(document.getElementById('modalTargetValue').value) : null;
+
+            const newRec = {
+                id: Date.now(),
+                student,
+                date,
+                metric,
+                score,
+                unit,
+                target
+            };
+
+            records.unshift(newRec);
+            closeModal('recordModal');
+            document.getElementById('recordMobileForm').reset();
+            document.getElementById('customMetricBox').classList.add('hidden');
+
+            renderAllViews();
+            triggerToast(`${student} 선수의 [${metric}] 기록이 저장되었습니다!`);
+        }
+
+        function deleteRecordItem(id) {
+            records = records.filter(r => r.id !== id);
+            renderAllViews();
+            triggerToast("기록이 삭제되었습니다.", "error");
+        }
+
+        function refreshAICoachTip() {
+            const tips = [
+                `"${currentStudentName} 선수는 셔틀런 지구력과 슛 감각이 일취월장하고 있어요! 꾸준한 칭찬이 최고의 동기부여가 됩니다. 💡"`,
+                `"${currentStudentName} 선수의 빠른 백코트와 민첩성이 돋보입니다. 경기 중 레이업 마무리 스텝을 집중 코칭해 보세요! 🏀"`,
+                `"지난달 대비 모든 수치가 뚜렷한 상승세입니다! 종합 능력치 밸런스가 매우 이상적입니다. ✨"`
+            ];
+            const rand = tips[Math.floor(Math.random() * tips.length)];
+            document.getElementById('homeAITip').innerText = rand;
+            triggerToast("AI 코치 팁이 갱신되었습니다.");
+        }
+
+        // --- 8. KAKAO SHARING & TOAST ---
+        function executeKakaoSend() {
+            triggerToast(`[${currentStudentName}] 학부모님께 카카오톡 알림톡을 발송했습니다! 🚀`);
+        }
+
+        function shareKakaoDirect() {
+            switchView('kakao');
+        }
+
+        function triggerToast(msg, type = "success") {
+            const toast = document.getElementById('mobileToast');
+            const msgEl = document.getElementById('toastMsg');
+            const iconEl = document.getElementById('toastIcon');
+
+            msgEl.innerText = msg;
+            if (type === "error") {
+                iconEl.className = "fa-solid fa-circle-exclamation text-red-400 text-sm";
+            } else {
+                iconEl.className = "fa-solid fa-circle-check text-emerald-400 text-sm";
+            }
+
+            toast.classList.remove('opacity-0', '-translate-y-4');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', '-translate-y-4');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
