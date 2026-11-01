@@ -3,1286 +3,714 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>강서초 스마트 농구부 AI 훈련 관리</title>
-    <!-- Web App & PWA Home Screen Installation Settings -->
+    <title>강서초 스마트 농구부 AI 훈련 관리 시스템</title>
+
+    <!-- 모바일 웹앱(PWA) 전체화면 설정 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="강서초 농구">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#070b19">
-    <!-- Fire Flame '강서' High-Res PWA & Touch App Icon -->
-    <link rel="apple-touch-icon" sizes="192x192" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3CradialGradient id='bgDark' cx='50%25' cy='30%25' r='75%25'%3E%3Cstop offset='0%25' stop-color='%23381024'/%3E%3Cstop offset='50%25' stop-color='%2319081a'/%3E%3Cstop offset='100%25' stop-color='%2308040d'/%3E%3C/radialGradient%3E%3CradialGradient id='flameGrad' cx='70%25' cy='35%25' r='60%25'%3E%3Cstop offset='0%25' stop-color='%23ffffff'/%3E%3Cstop offset='25%25' stop-color='%23ffea00'/%3E%3Cstop offset='55%25' stop-color='%23ff5400'/%3E%3Cstop offset='85%25' stop-color='%23d90429'/%3E%3Cstop offset='100%25' stop-color='%237209b7' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='ballGrad' cx='40%25' cy='32%25' r='68%25'%3E%3Cstop offset='0%25' stop-color='%23ffb703'/%3E%3Cstop offset='40%25' stop-color='%23fb8500'/%3E%3Cstop offset='75%25' stop-color='%23b73200'/%3E%3Cstop offset='100%25' stop-color='%23541400'/%3E%3C/radialGradient%3E%3ClinearGradient id='goldFace' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23fff3b0'/%3E%3Cstop offset='35%25' stop-color='%23ffc300'/%3E%3Cstop offset='75%25' stop-color='%23ff9500'/%3E%3Cstop offset='100%25' stop-color='%23d06000'/%3E%3C/linearGradient%3E%3ClinearGradient id='gold3D' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23662200'/%3E%3Cstop offset='100%25' stop-color='%23220500'/%3E%3C/linearGradient%3E%3Cfilter id='glow' x='-20%25' y='-20%25' width='140%25' height='140%25'%3E%3CfeGaussianBlur stdDeviation='8' result='blur'/%3E%3CfeComposite in='SourceGraphic' in2='blur' operator='over'/%3E%3C/filter%3E%3C/defs%3E%3Crect width='512' height='512' rx='118' fill='url(%23bgDark)'/%3E%3C!-- Raging Fire Flames Behind Ball --%3E%3Cpath d='M250 200 C300 110 360 40 430 40 C410 100 470 110 460 170 C490 120 480 200 450 250 C440 210 420 220 400 280 C360 210 320 250 280 280 Z' fill='url(%23flameGrad)' opacity='0.95' filter='url(%23glow)'/%3E%3Cpath d='M220 180 C270 80 340 30 390 50 C370 110 410 130 380 210 C340 180 300 220 250 220 Z' fill='%23fffa65' opacity='0.9'/%3E%3C!-- 3D Basketball Sphere --%3E%3Ccircle cx='235' cy='210' r='142' fill='url(%23ballGrad)'/%3E%3C!-- Seams with curved depth --%3E%3Cpath d='M235 68 L235 352' stroke='%232b0900' stroke-width='9' stroke-linecap='round' opacity='0.85'/%3E%3Cpath d='M93 210 L377 210' stroke='%232b0900' stroke-width='9' stroke-linecap='round' opacity='0.85'/%3E%3Cpath d='M140 105 Q255 210 140 315' stroke='%232b0900' stroke-width='8.5' stroke-linecap='round' fill='none' opacity='0.85'/%3E%3Cpath d='M330 105 Q215 210 330 315' stroke='%232b0900' stroke-width='8.5' stroke-linecap='round' fill='none' opacity='0.85'/%3E%3C!-- Ball Top Specular Glow --%3E%3Cellipse cx='200' cy='135' rx='50' ry='28' fill='%23ffffff' opacity='0.35' transform='rotate(-22 200 135)'/%3E%3C!-- Speed / Orbit Swoosh Track --%3E%3Cpath d='M50 440 C140 470 410 450 460 360 C480 320 440 320 420 340 C360 390 140 430 70 395 Z' fill='%23ff9e00' filter='url(%23glow)'/%3E%3Cpath d='M70 440 C160 465 390 440 440 360 C420 375 350 415 110 415 Z' fill='%23fff3b0'/%3E%3C!-- Sparkles / Embers --%3E%3Ccircle cx='95' cy='260' r='4' fill='%23ffea00' filter='url(%23glow)'/%3E%3Ccircle cx='60' cy='420' r='5' fill='%23ffea00' filter='url(%23glow)'/%3E%3Ccircle cx='460' cy='180' r='4' fill='%23ffffff' filter='url(%23glow)'/%3E%3C!-- 3D Bold Extruded Korean Typography '강서' --%3E%3Cg transform='rotate(-8 250 340)'%3E%3C!-- 3D Shadow Extrusion Layers --%3E%3Ctext x='253' y='366' text-anchor='middle' font-family='Arial Black, Pretendard, sans-serif' font-weight='900' font-size='165' fill='%231a0500'%3E강서%3C/text%3E%3Ctext x='250' y='362' text-anchor='middle' font-family='Arial Black, Pretendard, sans-serif' font-weight='900' font-size='165' fill='%23380d00'%3E강서%3C/text%3E%3Ctext x='248' y='356' text-anchor='middle' font-family='Arial Black, Pretendard, sans-serif' font-weight='900' font-size='165' fill='%23631900'%3E강서%3C/text%3E%3Ctext x='246' y='350' text-anchor='middle' font-family='Arial Black, Pretendard, sans-serif' font-weight='900' font-size='165' fill='%239e2a00'%3E강서%3C/text%3E%3C!-- Golden Face with Thick Stroke --%3E%3Ctext x='245' y='346' text-anchor='middle' font-family='Arial Black, Pretendard, sans-serif' font-weight='900' font-size='165' fill='url(%23goldFace)' stroke='%23ffffff' stroke-width='6' stroke-linejoin='round'%3E강서%3C/text%3E%3C/g%3E%3C/svg%3E">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3CradialGradient id='bgDark' cx='50%25' cy='30%25' r='75%25'%3E%3Cstop offset='0%25' stop-color='%23381024'/%3E%3Cstop offset='50%25' stop-color='%2319081a'/%3E%3Cstop offset='100%25' stop-color='%2308040d'/%3E%3C/radialGradient%3E%3CradialGradient id='flameGrad' cx='70%25' cy='35%25' r='60%25'%3E%3Cstop offset='0%25' stop-color='%23ffffff'/%3E%3Cstop offset='25%25' stop-color='%23ffea00'/%3E%3Cstop offset='55%25' stop-color='%23ff5400'/%3E%3Cstop offset='85%25' stop-color='%23d90429'/%3E%3Cstop offset='100%25' stop-color='%237209b7' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='ballGrad' cx='40%25' cy='32%25' r='68%25'%3E%3Cstop offset='0%25' stop-color='%23ffb703'/%3E%3Cstop offset='40%25' stop-color='%23fb8500'/%3E%3Cstop offset='75%25' stop-color='%23b73200'/%3E%3Cstop offset='100%25' stop-color='%23541400'/%3E%3C/radialGradient%3E%3ClinearGradient id='goldFace' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23fff3b0'/%3E%3Cstop offset='35%25' stop-color='%23ffc300'/%3E%3Cstop offset='75%25' stop-color='%23ff9500'/%3E%3Cstop offset='100%25' stop-color='%23d06000'/%3E%3C/linearGradient%3E%3Cfilter id='glow' x='-20%25' y='-20%25' width='140%25' height='140%25'%3E%3CfeGaussianBlur stdDeviation='8' result='blur'/%3E%3CfeComposite in='SourceGraphic' in2='blur' operator='over'/%3E%3C/filter%3E%3C/defs%3E%3Crect width='512' height='512' rx='118' fill='url(%23bgDark)'/%3E%3Cpath d='M250 200 C300 110 360 40 430 40 C410 100 470 110 460 170 C490 120 480 200 450 250 C440 210 420 220 400 280 C360 210 320 250 280 280 Z' fill='url(%23flameGrad)' opacity='0.95' filter='url(%23glow)'/%3E%3Ccircle cx='235' cy='210' r='142' fill='url(%23ballGrad)'/%3E%3Cpath d='M235 68 L235 352' stroke='%232b0900' stroke-width='9' stroke-linecap='round' opacity='0.85'/%3E%3Cpath d='M93 210 L377 210' stroke='%232b0900' stroke-width='9' stroke-linecap='round' opacity='0.85'/%3E%3Cpath d='M140 105 Q255 210 140 315' stroke='%232b0900' stroke-width='8.5' stroke-linecap='round' fill='none' opacity='0.85'/%3E%3Cpath d='M330 105 Q215 210 330 315' stroke='%232b0900' stroke-width='8.5' stroke-linecap='round' fill='none' opacity='0.85'/%3E%3Cpath d='M50 440 C140 470 410 450 460 360 C480 320 440 320 420 340 C360 390 140 430 70 395 Z' fill='%23ff9e00' filter='url(%23glow)'/%3E%3Cpath d='M70 440 C160 465 390 440 440 360 C420 375 350 415 110 415 Z' fill='%23fff3b0'/%3E%3Cg transform='rotate(-8 250 340)'%3E%3Ctext x='250' y='362' text-anchor='middle' font-family='Arial Black, Pretendard, sans-serif' font-weight='900' font-size='165' fill='%23380d00'%3E강서%3C/text%3E%3Ctext x='245' y='346' text-anchor='middle' font-family='Arial Black, Pretendard, sans-serif' font-weight='900' font-size='165' fill='url(%23goldFace)' stroke='%23ffffff' stroke-width='6' stroke-linejoin='round'%3E강서%3C/text%3E%3C/g%3E%3C/svg%3E">
-    <!-- Tailwind CSS -->
+
+    <!-- 불꽃 농구공 & 황금 입체 '강서' 앱 아이콘 (SVG Data URI) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%230d1530'/%3E%3Cstop offset='55%25' stop-color='%23241023'/%3E%3Cstop offset='100%25' stop-color='%23431216'/%3E%3C/linearGradient%3E%3CradialGradient id='ball' cx='35%25' cy='30%25' r='65%25'%3E%3Cstop offset='0%25' stop-color='%23ffba08'/%3E%3Cstop offset='45%25' stop-color='%23f48c06'/%3E%3Cstop offset='85%25' stop-color='%23dc2f02'/%3E%3Cstop offset='100%25' stop-color='%236a040f'/%3E%3C/radialGradient%3E%3ClinearGradient id='fire' x1='0%25' y1='100%25' x2='100%25' y2='0%25'%3E%3Cstop offset='0%25' stop-color='%23ff4800'/%3E%3Cstop offset='50%25' stop-color='%23ff9e00'/%3E%3Cstop offset='100%25' stop-color='%23fff3b0'/%3E%3C/linearGradient%3E%3ClinearGradient id='gold' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23fff8d6'/%3E%3Cstop offset='35%25' stop-color='%23ffd60a'/%3E%3Cstop offset='75%25' stop-color='%23f48c06'/%3E%3Cstop offset='100%25' stop-color='%239d4edd' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='115' fill='url(%23bg)'/%3E%3Cpath d='M260 65 C340 15 440 35 480 90 C430 95 410 130 465 140 C410 175 430 220 485 215 C425 275 365 300 290 290 Z' fill='url(%23fire)' opacity='0.95'/%3E%3Ccircle cx='215' cy='215' r='135' fill='url(%23ball)' stroke='%23ffb703' stroke-width='4'/%3E%3Cpath d='M95 160 Q215 215 335 160 M115 295 Q215 225 320 290 M215 80 Q165 215 215 350 M85 225 Q215 205 350 225' stroke='%232b0904' stroke-width='10' fill='none' stroke-linecap='round'/%3E%3Cg transform='rotate(-8 256 365)'%3E%3Ctext x='256' y='398' text-anchor='middle' font-family='Pretendard, sans-serif' font-weight='900' font-size='155' fill='%233b1105' stroke='%233b1105' stroke-width='26' stroke-linejoin='round'%3E강서%3C/text%3E%3Ctext x='250' y='385' text-anchor='middle' font-family='Pretendard, sans-serif' font-weight='900' font-size='155' fill='url(%23gold)' stroke='%23ffffff' stroke-width='4'%3E강서%3C/text%3E%3C/g%3E%3Cpath d='M75 455 Q260 480 435 400 Q460 385 415 370' fill='none' stroke='url(%23fire)' stroke-width='14' stroke-linecap='round'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%230d1530'/%3E%3Cstop offset='55%25' stop-color='%23241023'/%3E%3Cstop offset='100%25' stop-color='%23431216'/%3E%3C/linearGradient%3E%3CradialGradient id='ball' cx='35%25' cy='30%25' r='65%25'%3E%3Cstop offset='0%25' stop-color='%23ffba08'/%3E%3Cstop offset='45%25' stop-color='%23f48c06'/%3E%3Cstop offset='85%25' stop-color='%23dc2f02'/%3E%3Cstop offset='100%25' stop-color='%236a040f'/%3E%3C/radialGradient%3E%3ClinearGradient id='fire' x1='0%25' y1='100%25' x2='100%25' y2='0%25'%3E%3Cstop offset='0%25' stop-color='%23ff4800'/%3E%3Cstop offset='50%25' stop-color='%23ff9e00'/%3E%3Cstop offset='100%25' stop-color='%23fff3b0'/%3E%3C/linearGradient%3E%3ClinearGradient id='gold' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23fff8d6'/%3E%3Cstop offset='35%25' stop-color='%23ffd60a'/%3E%3Cstop offset='75%25' stop-color='%23f48c06'/%3E%3Cstop offset='100%25' stop-color='%239d4edd' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='115' fill='url(%23bg)'/%3E%3Cpath d='M260 65 C340 15 440 35 480 90 C430 95 410 130 465 140 C410 175 430 220 485 215 C425 275 365 300 290 290 Z' fill='url(%23fire)' opacity='0.95'/%3E%3Ccircle cx='215' cy='215' r='135' fill='url(%23ball)' stroke='%23ffb703' stroke-width='4'/%3E%3Cpath d='M95 160 Q215 215 335 160 M115 295 Q215 225 320 290 M215 80 Q165 215 215 350 M85 225 Q215 205 350 225' stroke='%232b0904' stroke-width='10' fill='none' stroke-linecap='round'/%3E%3Cg transform='rotate(-8 256 365)'%3E%3Ctext x='256' y='398' text-anchor='middle' font-family='Pretendard, sans-serif' font-weight='900' font-size='155' fill='%233b1105' stroke='%233b1105' stroke-width='26' stroke-linejoin='round'%3E강서%3C/text%3E%3Ctext x='250' y='385' text-anchor='middle' font-family='Pretendard, sans-serif' font-weight='900' font-size='155' fill='url(%23gold)' stroke='%23ffffff' stroke-width='4'%3E강서%3C/text%3E%3C/g%3E%3Cpath d='M75 455 Q260 480 435 400 Q460 385 415 370' fill='none' stroke='url(%23fire)' stroke-width='14' stroke-linecap='round'/%3E%3C/svg%3E">
+
+    <!-- Tailwind CSS & Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Kakao JavaScript SDK -->
-    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" integrity="sha384-TiCUE00h649CAMonG018J2mUxP90v52QEGoNXNX4GYV1gF2b0200A40388zD20d8" crossorigin="anonymous"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        navy: {
-                            950: '#070b19',
-                            900: '#0c1328',
-                            850: '#111b38',
-                            800: '#18244a',
-                            700: '#233263',
-                        },
-                        brand: {
-                            orange: '#f97316',
-                            gold: '#fbbf24',
-                            blue: '#3b82f6',
-                            cyan: '#06b6d4',
-                            emerald: '#10b981',
-                            kakao: '#fee500',
-                            kakaoBrown: '#3c1e1e'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Pretendard', 'Inter', '-apple-system', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
+    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
     <style>
         * {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
             -webkit-tap-highlight-color: transparent;
-            user-select: none;
-        }
-        input, textarea, select {
-            user-select: text;
         }
         body {
-            background-color: #050814;
-            color: #f1f5f9;
-            font-family: 'Pretendard', sans-serif;
-            overflow: hidden;
-            touch-action: pan-y;
+            background-color: #070b19;
+            color: #f8fafc;
+            overscroll-behavior-y: none;
         }
-        .hide-scrollbar::-webkit-scrollbar {
+        .glass-card {
+            background: rgba(17, 25, 48, 0.78);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
-        .hide-scrollbar {
+        .no-scrollbar {
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
-        .safe-bottom {
-            padding-bottom: env(safe-area-inset-bottom, 12px);
+        @keyframes pulse-ring {
+            0% { transform: scale(0.92); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 18px rgba(239, 68, 68, 0); }
+            100% { transform: scale(0.92); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
-        .safe-top {
-            padding-top: env(safe-area-inset-top, 8px);
-        }
-        .card-glass {
-            background: rgba(17, 27, 56, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .glow-orange {
-            box-shadow: 0 4px 20px -2px rgba(249, 115, 22, 0.35);
-        }
-        .glow-blue {
-            box-shadow: 0 4px 20px -2px rgba(59, 130, 246, 0.35);
-        }
-        .pulse-subtle {
-            animation: pulse-border 2s infinite;
-        }
-        @keyframes pulse-border {
-            0%, 100% { border-color: rgba(59, 130, 246, 0.3); }
-            50% { border-color: rgba(59, 130, 246, 0.9); }
+        .recording-pulse {
+            animation: pulse-ring 1.5s infinite;
         }
     </style>
 </head>
-<body class="h-full flex items-center justify-center p-0 sm:p-4">
+<body class="h-full flex justify-center bg-slate-950 select-none">
 
-    <!-- Mobile Frame Wrapper (centered smartphone viewport) -->
-    <div class="relative w-full h-full sm:max-w-[420px] sm:h-[880px] bg-navy-950 sm:rounded-[42px] sm:border-[8px] sm:border-slate-800 shadow-2xl flex flex-col overflow-hidden sm:ring-1 sm:ring-white/10">
+    <!-- Mobile App Shell -->
+    <div class="w-full max-w-md min-h-screen bg-[#070b19] flex flex-col relative shadow-2xl border-x border-slate-800/60 pb-24">
 
-        <!-- Mobile Status Bar (Visual embellishment) -->
-        <div class="safe-top bg-navy-950 px-6 pt-3 pb-1 flex justify-between items-center text-[11px] text-slate-400 font-medium z-30 select-none">
-            <span id="statusBarClock" class="font-semibold text-slate-200">09:41</span>
-            <div class="flex items-center gap-2">
-                <i class="fa-solid fa-signal text-[10px]"></i>
-                <i class="fa-solid fa-wifi text-[10px]"></i>
-                <i class="fa-solid fa-battery-full text-xs text-emerald-400"></i>
-            </div>
-        </div>
-
-        <!-- Sticky App Header -->
-        <header class="bg-navy-950/95 backdrop-blur-md px-4 py-2.5 border-b border-white/5 flex items-center justify-between z-30">
-            <!-- Brand Logo -->
-            <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-400 flex items-center justify-center text-white shadow-md shadow-orange-500/20 text-base">
-                    <i class="fa-solid fa-basketball"></i>
+        <!-- Top Navigation Bar -->
+        <header class="sticky top-0 z-30 bg-[#070b19]/90 backdrop-blur-xl border-b border-white/10 px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-2.5">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 via-amber-500 to-red-600 flex items-center justify-center shadow-lg shadow-orange-500/30 border border-amber-300/40">
+                    <i class="fa-solid fa-basketball text-white text-base"></i>
                 </div>
                 <div>
-                    <div class="flex items-center gap-1.5">
-                        <h1 class="text-sm font-extrabold text-white tracking-tight leading-none">강서초 농구부</h1>
-                        <span id="appRoleBadge" class="text-[9px] px-1.5 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold">코치모드</span>
+                    <div class="flex items-center space-x-1.5">
+                        <h1 class="text-sm font-black tracking-tight text-white">강서초 스마트 농구부</h1>
+                        <span id="parentModeBadge" class="hidden text-[10px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full">학부모 전용</span>
                     </div>
-                    <span id="appRoleSubText" class="text-[10px] text-slate-400">모바일 훈련 코칭</span>
+                    <p id="headerSubStatus" class="text-[10px] text-slate-400 font-medium">AI Training & Growth System</p>
                 </div>
             </div>
 
-            <!-- Active Student Switcher Dropdown & Quick Add (Hidden in Parent Mode) -->
-            <div id="coachTopControls" class="flex items-center gap-2">
-                <div class="relative">
-                    <button onclick="toggleStudentModal()" class="flex items-center gap-1.5 bg-navy-850 hover:bg-navy-800 border border-slate-700/80 px-2.5 py-1.5 rounded-full text-xs font-semibold text-slate-200 transition-all active:scale-95">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                        <span id="currentStudentPill" class="max-w-[70px] truncate">김지유</span>
-                        <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 ml-0.5"></i>
-                    </button>
-                </div>
-                <button onclick="openRecordModal()" class="w-8 h-8 rounded-full bg-blue-600 hover:bg-blue-500 active:scale-95 text-white flex items-center justify-center shadow-lg shadow-blue-500/30 text-xs transition-all">
-                    <i class="fa-solid fa-plus"></i>
+            <!-- Right Controls (Coach Mode vs Parent Mode) -->
+            <div class="flex items-center space-x-2">
+                <!-- Student Selector Pill -->
+                <button id="studentSwitcherBtn" onclick="openPlayerModal()" class="flex items-center space-x-1.5 bg-slate-800/90 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-full transition active:scale-95">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span id="currentStudentBadge" class="text-xs font-extrabold text-white">김지유</span>
+                    <i id="studentSwitcherChevron" class="fa-solid fa-chevron-down text-[10px] text-slate-400"></i>
                 </button>
-            </div>
-            <!-- Parent Mode Child Indicator (Shown only in Parent Mode) -->
-            <div id="parentChildIndicator" class="hidden">
-                <span class="bg-amber-400/20 text-amber-300 border border-amber-400/40 px-2.5 py-1 rounded-full text-xs font-bold">
-                    <i class="fa-solid fa-user-check mr-1"></i><span id="parentChildName">김지유</span> 리포트
-                </span>
+
+                <!-- Quick Add Measurement Button -->
+                <button id="quickAddRecordBtn" onclick="openRecordModal()" class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-lg shadow-blue-600/30 active:scale-90 transition" title="새 측정 추가">
+                    <i class="fa-solid fa-plus text-xs"></i>
+                </button>
             </div>
         </header>
 
-        <!-- Main Scrollable App Container -->
-        <main id="appScrollContainer" class="flex-1 overflow-y-auto hide-scrollbar pb-24 px-4 pt-3 space-y-4">
+        <!-- Main Content Area -->
+        <main class="flex-1 px-4 pt-4 space-y-5 overflow-y-auto no-scrollbar">
 
-            <!-- ================= VIEW 1: HOME (Dashboard) ================= -->
-            <div id="view-home" class="view-content space-y-4">
-                
-                <!-- Hero Player Status Card -->
-                <div class="card-glass rounded-3xl p-4 relative overflow-hidden shadow-xl border border-slate-700/50">
-                    <div class="absolute -right-6 -bottom-6 w-32 h-32 rounded-full bg-blue-500/10 blur-2xl pointer-events-none"></div>
-                    <div class="flex items-center gap-3.5 mb-3.5">
-                        <!-- Student Photo with Interactive Camera Upload Overlay -->
-                        <div class="relative flex-shrink-0 group">
-                            <img id="homePlayerImg" src="https://images.unsplash.com/photo-1546519638-68e109498ffc?w=160&auto=format&fit=crop&q=80" alt="선수" class="w-16 h-16 rounded-2xl object-cover border-2 border-amber-400/80 shadow-md transition-transform duration-200 group-hover:scale-105">
-                            
-                            <!-- Hidden File Input for Direct Photo Upload -->
-                            <input type="file" id="studentPhotoFileInput" accept="image/*" class="hidden" onchange="handleStudentPhotoUpload(event)">
-                            
-                            <!-- Camera Upload Button Badge -->
-                            <button type="button" onclick="triggerPhotoUploadDialog()" title="학생 사진 등록/변경" class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 text-navy-950 flex items-center justify-center shadow-lg border border-white/50 active:scale-90 transition-transform cursor-pointer">
-                                <i class="fa-solid fa-camera text-[11px]"></i>
-                            </button>
-                            
-                            <span class="absolute -top-1.5 -left-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-[9px] font-black text-navy-950 px-1.5 py-0.2 rounded-md shadow pointer-events-none">
-                                ★ 에이스
-                            </span>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-1.5">
-                                <h2 id="homePlayerName" class="text-lg font-bold text-white truncate">김지유</h2>
-                                <span id="homePlayerPosition" class="text-[11px] px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-300 font-medium">가드</span>
+            <!-- ======================= TAB 1: 홈 대시보드 ======================= -->
+            <section id="tab-home" class="space-y-4">
+
+                <!-- Player Profile Hero Card -->
+                <div class="glass-card rounded-3xl p-4 relative overflow-hidden">
+                    <div class="absolute -right-8 -top-8 w-32 h-32 bg-orange-500/15 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3.5">
+                            <div class="relative">
+                                <img id="profileImage" src="https://placehold.co/120x120/1e293b/fbbf24?text=GS" alt="선수 프로필" class="w-16 h-16 rounded-2xl object-cover border-2 border-amber-400/60 shadow-lg">
+                                <label id="photoUploadLabel" for="photoInput" class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 flex items-center justify-center shadow cursor-pointer transition">
+                                    <i class="fa-solid fa-camera text-[11px]"></i>
+                                </label>
+                                <input id="photoInput" type="file" accept="image/*" class="hidden" onchange="handleProfilePhotoUpload(event)">
                             </div>
-                            <p id="homePlayerMeta" class="text-xs text-slate-400 mt-0.5">강서초 5학년 • 7번</p>
-                            <p id="homePlayerQuote" class="text-[11px] text-amber-300/90 mt-1 truncate">"성실한 노력으로 우리 팀을 이끄는 슈터!"</p>
-                        </div>
-                    </div>
-
-                    <!-- Growth Score Highlight -->
-                    <div class="bg-navy-950/70 border border-white/5 rounded-2xl p-3 flex items-center justify-between">
-                        <div>
-                            <span class="text-[11px] text-slate-400 block font-medium">종합 성장 점수</span>
-                            <div class="flex items-center gap-1.5 mt-0.5">
-                                <span class="text-2xl font-black text-amber-400 tracking-tight" id="homeScore">92</span>
-                                <span class="text-xs text-slate-400">점</span>
-                                <span class="text-[10px] font-bold text-emerald-400 bg-emerald-500/15 px-1.5 py-0.5 rounded-md">
-                                    <i class="fa-solid fa-arrow-trend-up"></i> +8점
-                                </span>
+                            <div>
+                                <div class="flex items-center space-x-1.5">
+                                    <span id="profileGradeBadge" class="text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-md">강서초 농구부</span>
+                                    <span id="profilePositionBadge" class="text-[10px] font-semibold text-slate-400">가드 / 포워드</span>
+                                </div>
+                                <h2 id="profileName" class="text-xl font-black text-white mt-0.5">김지유 선수</h2>
+                                <p id="profileUpdatedDate" class="text-[11px] text-slate-400">최근 측정일: 2025-05-15</p>
                             </div>
                         </div>
-                        <div class="text-right">
-                            <span class="text-[11px] text-slate-400 block font-medium">이번 달 훈련</span>
-                            <span class="text-base font-bold text-white mt-0.5 block">20회 완료</span>
+
+                        <!-- Total AI Score -->
+                        <div class="text-right bg-slate-900/80 border border-slate-700/70 px-3.5 py-2 rounded-2xl">
+                            <span class="text-[10px] text-slate-400 font-semibold block">AI 종합지수</span>
+                            <div class="flex items-baseline justify-end space-x-1">
+                                <span id="heroTotalScore" class="text-2xl font-black text-amber-400">92</span>
+                                <span id="heroScoreDiff" class="text-[11px] font-bold text-emerald-400">+4.2</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Dynamic Recent Metrics (Horizontal Scroll for Mobile Ergonomics) -->
-                <div>
-                    <div class="flex items-center justify-between mb-2 px-1">
-                        <span class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-                            <i class="fa-solid fa-fire text-orange-400"></i> 최근 측정 기록 (실시간)
-                        </span>
-                        <button onclick="openRecordModal()" class="text-[11px] text-blue-400 font-semibold active:text-blue-300">
-                            + 항목 추가
-                        </button>
+                <!-- 3 Key Metric Cards -->
+                <div class="grid grid-cols-3 gap-2.5">
+                    <div class="glass-card rounded-2xl p-3 text-center">
+                        <span class="text-[11px] text-slate-400 font-semibold block">슛 성공률</span>
+                        <p id="metricShootRate" class="text-lg font-black text-emerald-400 mt-1">82%</p>
+                        <span class="text-[10px] text-slate-500">자유투/레이업 평균</span>
                     </div>
-
-                    <div id="homeMetricsScroll" class="flex gap-2.5 overflow-x-auto hide-scrollbar pb-1 -mx-4 px-4 snap-x">
-                        <!-- Injected dynamically -->
+                    <div class="glass-card rounded-2xl p-3 text-center">
+                        <span class="text-[11px] text-slate-400 font-semibold block">셔틀런 (지구력)</span>
+                        <p id="metricShuttle" class="text-lg font-black text-purple-400 mt-1">78회</p>
+                        <span class="text-[10px] text-slate-500">20m 왕복달리기</span>
+                    </div>
+                    <div class="glass-card rounded-2xl p-3 text-center">
+                        <span class="text-[11px] text-slate-400 font-semibold block">드리블 / 점프</span>
+                        <p id="metricAgility" class="text-lg font-black text-amber-400 mt-1">42cm</p>
+                        <span id="metricDribbleSub" class="text-[10px] text-slate-500">드리블 11.8초</span>
                     </div>
                 </div>
 
-                <!-- AI Coach Speech Bubble -->
-                <div class="bg-gradient-to-r from-purple-900/40 via-indigo-900/30 to-navy-850 border border-purple-500/30 rounded-2xl p-3.5 shadow-lg relative">
+                <!-- AI Coach Growth Brief -->
+                <div class="glass-card rounded-2xl p-4 border-l-4 border-l-amber-400">
                     <div class="flex items-center justify-between mb-1.5">
-                        <div class="flex items-center gap-1.5">
-                            <span class="w-5 h-5 rounded-lg bg-purple-500/20 text-purple-300 flex items-center justify-center text-[10px]">
-                                <i class="fa-solid fa-robot"></i>
-                            </span>
-                            <span class="text-xs font-bold text-purple-200">AI 코치의 원포인트 레슨</span>
-                        </div>
-                        <button onclick="refreshAICoachTip()" class="text-[10px] text-purple-300/80 hover:text-purple-200 active:rotate-180 transition-transform">
-                            <i class="fa-solid fa-rotate-right"></i>
-                        </button>
+                        <span class="text-xs font-extrabold text-amber-400 flex items-center">
+                            <i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i>AI 퍼포먼스 분석 피드백
+                        </span>
+                        <span class="text-[10px] text-slate-400">실시간 데이터 기반</span>
                     </div>
-                    <p id="homeAITip" class="text-xs text-slate-200 leading-relaxed font-normal">
-                        "지유 선수는 자유투 성공률(80%)과 셔틀런 지구력이 매우 우수해요! 다음 훈련에는 레이업 돌파 스텝에 집중해 봅시다! 💡"
+                    <p id="aiCoachBrief" class="text-xs text-slate-200 leading-relaxed">
+                        최근 측정 결과 슛 밸런스와 민첩성이 꾸준히 상승하고 있습니다. 후반 체력 유지를 위한 인터벌 셔틀런과 약손 레이업 마무리 훈련을 병행하면 더욱 뛰어난 성장이 기대됩니다.
                     </p>
                 </div>
 
-                <!-- 3-Month Growth Chart -->
-                <div class="card-glass rounded-3xl p-4 shadow-xl border border-slate-700/50">
+                <!-- Trend Line Chart -->
+                <div class="glass-card rounded-3xl p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h3 class="text-sm font-extrabold text-white">성장 추이 그래프</h3>
+                            <p class="text-[11px] text-slate-400">회차별 종합 능력치 및 슛 성공률 변화</p>
+                        </div>
+                        <span class="text-[10px] font-bold bg-blue-500/20 text-blue-300 px-2.5 py-1 rounded-lg">최근 기록</span>
+                    </div>
+                    <div class="h-48 w-full">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======================= TAB 2: 상세 기록 & 5각형 분석 ======================= -->
+            <section id="tab-records" class="hidden space-y-4">
+                <div class="glass-card rounded-3xl p-4">
                     <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
-                            <i class="fa-solid fa-chart-line text-blue-400"></i> 3개월 성장 추이
-                        </span>
-                        <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full font-bold">
-                            전월 대비 +20% ↑
-                        </span>
-                    </div>
-                    <div class="h-44 w-full">
-                        <canvas id="mobileTrendChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Quick Action Buttons -->
-                <div class="grid grid-cols-2 gap-2.5">
-                    <button onclick="switchView('records')" class="card-glass hover:bg-navy-800 active:scale-95 p-3 rounded-2xl flex items-center gap-2.5 transition-all text-left">
-                        <div class="w-9 h-9 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-sm flex-shrink-0">
-                            <i class="fa-solid fa-stopwatch-20"></i>
-                        </div>
                         <div>
-                            <span class="text-xs font-bold text-white block">측정 기록하기</span>
-                            <span class="text-[10px] text-slate-400">셔틀런/서전트 등</span>
-                        </div>
-                    </button>
-                    <button onclick="switchView('kakao')" class="card-glass hover:bg-navy-800 active:scale-95 p-3 rounded-2xl flex items-center gap-2.5 transition-all text-left">
-                        <div class="w-9 h-9 rounded-xl bg-amber-400 text-navy-950 flex items-center justify-center text-sm flex-shrink-0 font-bold">
-                            <i class="fa-solid fa-comment"></i>
-                        </div>
-                        <div>
-                            <span class="text-xs font-bold text-white block">카카오톡 전송</span>
-                            <span class="text-[10px] text-slate-400">학부모 리포트 공유</span>
-                        </div>
-                    </button>
-                </div>
-
-            </div>
-
-            <!-- ================= VIEW 2: RECORDS (Dynamic Measurement by Name) ================= -->
-            <div id="view-records" class="view-content hidden space-y-4">
-                
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h2 class="text-base font-bold text-white">훈련 & 체력 측정 관리</h2>
-                        <p class="text-[11px] text-slate-400">이름 기준으로 어떤 종목이든 자유롭게 추가</p>
-                    </div>
-                    <button onclick="openRecordModal()" class="bg-blue-600 hover:bg-blue-500 active:scale-95 text-white px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-blue-500/30">
-                        <i class="fa-solid fa-plus"></i> 새 측정 추가
-                    </button>
-                </div>
-
-                <!-- Filter & Selected Student Reminder -->
-                <div class="bg-navy-850 border border-slate-700/60 p-3 rounded-2xl flex items-center justify-between">
-                    <div class="flex items-center gap-2">
-                        <span class="text-xs text-slate-400">선택 선수:</span>
-                        <span id="recordsActiveStudentBadge" class="text-xs font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-lg">김지유</span>
-                    </div>
-                    <div class="text-[11px] text-slate-400">
-                        총 <span id="recordsCount" class="text-white font-bold">0</span>건 등록됨
-                    </div>
-                </div>
-
-                <!-- Record Cards List for Phone -->
-                <div id="recordsListMobile" class="space-y-2.5">
-                    <!-- Injected dynamically -->
-                </div>
-
-            </div>
-
-            <!-- ================= VIEW 3: CONSULT (Voice AI Consultation) ================= -->
-            <div id="view-consult" class="view-content hidden space-y-4">
-                
-                <div class="text-left">
-                    <h2 class="text-base font-bold text-white flex items-center gap-2">
-                        <i class="fa-solid fa-microphone-lines text-purple-400"></i> 음성 상담 & AI 요약
-                    </h2>
-                    <p class="text-[11px] text-slate-400 mt-0.5">학부모 통화 및 현장 피드백을 녹음하면 AI가 자동 요약합니다.</p>
-                </div>
-
-                <!-- Voice Recording Mobile Hero Box -->
-                <div class="card-glass rounded-3xl p-5 border border-purple-500/30 space-y-4 text-center">
-                    <div class="flex justify-between items-center text-left">
-                        <div>
-                            <span class="text-xs font-bold text-purple-200 block">원터치 음성 상담 기록</span>
-                            <span class="text-[10px] text-slate-400">Gemini 3 Flash 요약 엔진 탑재</span>
-                        </div>
-                        <span id="recordingStatusPill" class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium">대기중</span>
-                    </div>
-
-                    <!-- Big Phone Ergonomic Microphone Button -->
-                    <div class="py-2 flex flex-col items-center justify-center">
-                        <button id="voiceRecordBtn" onclick="toggleVoiceRecording()" class="w-20 h-20 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-500 active:scale-90 text-white flex items-center justify-center text-2xl shadow-xl shadow-purple-600/40 border-4 border-purple-400/30 transition-all">
-                            <i id="voiceMicIcon" class="fa-solid fa-microphone"></i>
-                        </button>
-                        <span id="voiceRecordLabel" class="text-xs font-semibold text-slate-300 mt-3 block">마이크를 눌러 녹음 시작</span>
-                        <span class="text-[10px] text-slate-500 mt-0.5">(또는 직접 대화 내용을 아래에 입력하세요)</span>
-                    </div>
-
-                    <!-- Live Transcription Input -->
-                    <div class="space-y-2 text-left">
-                        <div class="flex items-center justify-between">
-                            <label class="text-[11px] font-semibold text-slate-300">음성 텍스트 / 상담 대화 내용</label>
-                        </div>
-                        <textarea id="voiceRawTranscript" rows="3" placeholder="녹음 버튼을 누르거나 상담 내용을 직접 적어주세요..." class="w-full bg-navy-950 border border-slate-700 rounded-2xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500"></textarea>
-                    </div>
-
-                    <button onclick="runMobileAiSummary()" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 active:scale-98 text-white py-3 rounded-2xl text-xs font-bold shadow-lg shadow-purple-500/25 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> AI로 핵심 요약 및 조치사항 추출
-                    </button>
-                </div>
-
-                <!-- Saved Consultation Notes Feed -->
-                <div class="space-y-2.5">
-                    <span class="text-xs font-bold text-slate-300 block px-1">최근 상담 기록 히스토리</span>
-                    <div id="consultNotesListMobile" class="space-y-2.5">
-                        <!-- Injected dynamically -->
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- ================= VIEW 4: REPORT (Growth Report Card & Radar) ================= -->
-            <div id="view-report" class="view-content hidden space-y-4">
-                
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h2 class="text-base font-bold text-white">성장 리포트 카드</h2>
-                        <p class="text-[11px] text-slate-400">다각도 역량 분석 및 맞춤형 성장도</p>
-                    </div>
-                    <button onclick="shareKakaoDirect()" class="bg-amber-400 text-navy-950 px-3 py-1.5 rounded-xl text-xs font-bold active:scale-95 shadow">
-                        <i class="fa-solid fa-share-nodes"></i> 리포트 공유
-                    </button>
-                </div>
-
-                <!-- Radar Chart Card -->
-                <div class="card-glass rounded-3xl p-4 shadow-xl border border-slate-700/50">
-                    <div class="flex items-center justify-between mb-1">
-                        <span class="text-xs font-bold text-slate-200 flex items-center gap-1.5">
-                            <i class="fa-solid fa-chart-pie text-emerald-400"></i> 오각형 종합 능력 밸런스
-                        </span>
-                        <span class="text-[10px] text-slate-400">파란색: 현재 / 회색: 이전</span>
-                    </div>
-                    <div class="h-52 w-full flex items-center justify-center">
-                        <canvas id="mobileRadarChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Mobile Receipt Style Report Card -->
-                <div class="bg-gradient-to-b from-navy-850 to-navy-900 border border-slate-700/80 rounded-3xl p-4 shadow-xl space-y-3">
-                    <div class="flex items-center justify-between border-b border-slate-700 pb-3">
-                        <div class="flex items-center gap-2.5">
-                            <img id="reportCardImg" src="https://images.unsplash.com/photo-1546519638-68e109498ffc?w=160&auto=format&fit=crop&q=80" class="w-9 h-9 rounded-xl object-cover border border-amber-400 shadow">
-                            <div>
-                                <h3 id="reportCardName" class="text-sm font-bold text-white">김지유 선수 성장 분석서</h3>
-                                <span class="text-[10px] text-slate-400">강서초등학교 농구부 코칭팀 발행</span>
-                            </div>
-                        </div>
-                        <span class="text-xs font-black text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">GRADE A+</span>
-                    </div>
-
-                    <!-- Metrics Breakdown -->
-                    <div class="space-y-2 text-xs">
-                        <div class="flex justify-between py-1 border-b border-slate-800">
-                            <span class="text-slate-400">자유투 성공률</span>
-                            <span class="font-bold text-white">80% (목표 대비 100% 달성)</span>
-                        </div>
-                        <div class="flex justify-between py-1 border-b border-slate-800">
-                            <span class="text-slate-400">셔틀런 (왕복달리기)</span>
-                            <span class="font-bold text-emerald-400">78개 (초등 상위 5% 지구력)</span>
-                        </div>
-                        <div class="flex justify-between py-1 border-b border-slate-800">
-                            <span class="text-slate-400">드리블 코스 주파</span>
-                            <span class="font-bold text-white">12.3초 (-1.2초 단축 성공)</span>
-                        </div>
-                        <div class="flex justify-between py-1 border-b border-slate-800">
-                            <span class="text-slate-400">서전트 점프 높이</span>
-                            <span class="font-bold text-amber-400">46cm (탄력 우수)</span>
+                            <h3 class="text-sm font-extrabold text-white">5대 핵심 역량 밸런스</h3>
+                            <p class="text-[11px] text-slate-400">지구력 · 순발력 · 볼핸들링 · 자유투 · 레이업</p>
                         </div>
                     </div>
-
-                    <!-- AI Coach Comprehensive Comment -->
-                    <div class="bg-navy-950/80 p-3 rounded-2xl border border-purple-500/20 text-xs text-slate-300 leading-relaxed">
-                        <span class="text-[10px] text-purple-300 font-bold block mb-1">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> AI 총평
-                        </span>
-                        "지유 선수는 지구력과 슛 정확도가 빠르게 성장하고 있습니다. 실전 경기에서도 침착하게 본인의 강점을 발휘할 수 있도록 꾸준한 칭찬과 응원이 큰 힘이 됩니다."
+                    <div class="h-60 w-full flex items-center justify-center">
+                        <canvas id="radarChart"></canvas>
                     </div>
                 </div>
 
-            </div>
-
-            <!-- ================= VIEW 5: KAKAO (KakaoTalk Report Sending) ================= -->
-            <div id="view-kakao" class="view-content hidden space-y-4">
-                
-                <div class="text-left">
-                    <h2 class="text-base font-bold text-white flex items-center gap-2">
-                        <i class="fa-solid fa-paper-plane text-amber-400"></i> 학부모 카카오톡 리포트 전송
-                    </h2>
-                    <p class="text-[11px] text-slate-400 mt-0.5">측정된 데이터와 AI 분석 결과를 알림톡으로 발송합니다.</p>
-                </div>
-
-                <!-- Kakao Preview Box -->
-                <div class="bg-navy-900 border border-slate-700/80 rounded-3xl p-4 space-y-3 shadow-xl">
+                <div class="glass-card rounded-3xl p-4 space-y-3">
                     <div class="flex items-center justify-between">
-                        <span class="text-[11px] font-bold text-amber-400 flex items-center gap-1.5">
-                            <i class="fa-solid fa-mobile-screen"></i> 알림톡 수신 화면 미리보기
-                        </span>
-                        <span class="text-[10px] text-slate-400">카카오 비즈메시지 규격</span>
+                        <h3 class="text-sm font-extrabold text-white">회차별 측정 기록 히스토리</h3>
+                        <button id="recordsTabAddBtn" onclick="openRecordModal()" class="text-xs font-bold text-blue-400 hover:text-blue-300">
+                            + 기록 추가
+                        </button>
                     </div>
-
-                    <!-- Realistic Kakao Bubble -->
-                    <div class="bg-[#fee500] text-[#191919] p-4 rounded-2xl rounded-tl-sm text-xs space-y-2.5 shadow-md">
-                        <div class="flex items-center justify-between border-b border-black/10 pb-2">
-                            <div class="flex items-center gap-2">
-                                <img id="kakaoStudentThumb" src="https://images.unsplash.com/photo-1546519638-68e109498ffc?w=160&auto=format&fit=crop&q=80" class="w-6 h-6 rounded-full object-cover border border-black/20 shadow-sm">
-                                <span class="font-extrabold text-[13px] text-[#191919]">[강서초 농구부] 훈련 리포트</span>
-                            </div>
-                            <span class="text-[10px] text-black/60">알림톡 도착</span>
-                        </div>
-
-                        <p class="leading-relaxed font-normal">
-                            안녕하세요, <b id="kakaoTargetPlayer">김지유</b> 선수 학부모님!<br>
-                            강서초등학교 농구부 코칭스태프입니다.<br><br>
-                            이번 달 지유 선수의 <b>셔틀런(지구력)</b> 및 <b>자유투 측정</b> 결과가 최신 업데이트되었습니다.
-                        </p>
-
-                        <div class="bg-white/80 rounded-xl p-2.5 space-y-1 text-[11px]">
-                            <div class="flex justify-between">
-                                <span class="text-slate-600">종합 성장 점수:</span>
-                                <span class="font-bold text-blue-600" id="kakaoScorePreview">92점 (+8점 상승)</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-slate-600">최근 측정 항목:</span>
-                                <span class="font-bold text-slate-800">자유투, 셔틀런, 서전트 점프</span>
-                            </div>
-                        </div>
-
-                        <div class="bg-black/5 hover:bg-black/10 active:scale-98 rounded-xl py-2.5 text-center font-bold text-xs text-blue-800 cursor-pointer border border-black/10 transition-all">
-                            📊 상세 성장 리포트 웹페이지 열기
-                        </div>
+                    <div id="measurementHistoryList" class="space-y-2.5">
+                        <!-- JS Rendered -->
                     </div>
                 </div>
+            </section>
 
-                <!-- Kakao Send Button -->
-                <button onclick="executeKakaoSend()" class="w-full bg-[#fee500] hover:bg-[#ebd400] active:scale-98 text-[#3c1e1e] py-3.5 rounded-2xl font-black text-sm shadow-xl shadow-amber-400/20 flex items-center justify-center gap-2 transition-all">
-                    <i class="fa-solid fa-comment text-base"></i> 학부모 카카오톡으로 즉시 전송하기
-                </button>
+            <!-- ======================= TAB 3: 음성 상담 & AI 요약 ======================= -->
+            <section id="tab-consult" class="hidden space-y-4">
+                <div class="glass-card rounded-3xl p-5 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] font-extrabold text-rose-400 bg-rose-500/15 border border-rose-500/30 px-2 py-0.5 rounded-md">LIVE STT & AI</span>
+                            <h3 class="text-base font-black text-white mt-1">스마트 음성 상담 기록기</h3>
+                            <p class="text-xs text-slate-400">마이크를 켜고 말씀하시면 실시간 텍스트로 기록됩니다.</p>
+                        </div>
+                        <button id="micRecordBtn" onclick="toggleVoiceRecording()" class="w-14 h-14 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white flex items-center justify-center shadow-lg shadow-rose-600/30 transition active:scale-95">
+                            <i id="micIcon" class="fa-solid fa-microphone text-xl"></i>
+                        </button>
+                    </div>
 
-            </div>
+                    <div id="recordingStatusBanner" class="hidden flex items-center justify-between bg-rose-500/15 border border-rose-500/30 px-3 py-2 rounded-xl">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping"></span>
+                            <span class="text-xs font-bold text-rose-300">실시간 음성 인식 중... 말씀해 주세요</span>
+                        </div>
+                        <button onclick="toggleVoiceRecording()" class="text-[11px] font-extrabold text-white bg-rose-600 px-2.5 py-1 rounded-lg">완료</button>
+                    </div>
+
+                    <!-- Consultation Textarea (No Demo Button) -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center justify-between">
+                            <label class="text-xs font-bold text-slate-300">상담 원문 (음성 인식 또는 직접 작성)</label>
+                            <button onclick="clearConsultInput()" class="text-[11px] text-slate-400 hover:text-slate-200">
+                                <i class="fa-solid fa-rotate-left mr-1"></i>비우기
+                            </button>
+                        </div>
+                        <textarea id="consultRawInput" rows="5" placeholder="마이크 버튼을 눌러 말씀하시거나 상담 내용을 직접 입력해 주세요..." class="w-full bg-slate-900/90 border border-slate-700/80 rounded-2xl p-3.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 leading-relaxed resize-none"></textarea>
+                    </div>
+
+                    <!-- AI Summary Trigger Button -->
+                    <button id="runAiSummaryBtn" onclick="runMobileAiSummary()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-slate-950 font-black text-xs shadow-lg shadow-orange-500/25 flex items-center justify-center space-x-2 active:scale-98 transition">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>상담 내용 기반 핵심 요약 및 조치사항 저장</span>
+                    </button>
+                </div>
+
+                <!-- Saved Consultation List -->
+                <div class="glass-card rounded-3xl p-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm font-extrabold text-white">학생별 상담 히스토리</h3>
+                        <span id="consultCountBadge" class="text-[11px] font-bold text-amber-400">0건</span>
+                    </div>
+                    <div id="consultationHistoryList" class="space-y-3">
+                        <!-- JS Rendered -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- ======================= TAB 4: 학부모 개별 카카오톡 리포트 전송 ======================= -->
+            <section id="tab-share" class="hidden space-y-4">
+                <div class="glass-card rounded-3xl p-5 space-y-4 border border-amber-400/30">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] font-extrabold bg-amber-400/20 text-amber-300 border border-amber-400/30 px-2.5 py-0.5 rounded-full">개인정보 보호 개별 링크</span>
+                            <h3 class="text-base font-black text-white mt-1.5">학부모 전용 성장 리포트 발송</h3>
+                        </div>
+                        <div class="w-11 h-11 rounded-2xl bg-[#FEE500] text-[#191919] flex items-center justify-center shadow-md">
+                            <i class="fa-solid fa-comment text-xl"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-2.5">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                            <span class="text-xs font-extrabold text-amber-400" id="sharePreviewTitle">[강서초 농구부] 김지유 선수 AI 성장 리포트</span>
+                            <span class="text-[10px] text-emerald-400 font-bold"><i class="fa-solid fa-lock mr-1"></i>단독 열람</span>
+                        </div>
+                        <p id="sharePreviewBody" class="text-xs text-slate-300 leading-relaxed">
+                            종합점수 92점 | 슛 성공률 82% | 셔틀런 78회
+                        </p>
+                        <div class="bg-slate-950/80 rounded-xl p-2.5 border border-slate-800/80">
+                            <p class="text-[10px] text-slate-400 mb-1">전송될 학부모 전용 보안 링크:</p>
+                            <p id="shareUrlPreview" class="text-[11px] text-blue-400 font-mono break-all">https://gangseobasketball.vercel.app?student=김지유&mode=parent</p>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-normal">
+                            * 학부모님이 위 링크를 열면 <strong>다른 학생의 명단이나 코치용 관리 버튼이 모두 숨겨지고</strong> 오직 해당 자녀의 리포트만 안전하게 표시됩니다.
+                        </p>
+                    </div>
+
+                    <div class="space-y-2.5">
+                        <button onclick="sendKakaoParentReport()" class="w-full py-3.5 rounded-2xl bg-[#FEE500] hover:bg-[#fdd800] text-[#191919] font-black text-xs shadow-lg flex items-center justify-center space-x-2 active:scale-98 transition">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>학부모 카카오톡으로 즉시 전송하기</span>
+                        </button>
+
+                        <button onclick="copyParentReportLink()" class="w-full py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs border border-slate-700 flex items-center justify-center space-x-2 active:scale-98 transition">
+                            <i class="fa-regular fa-copy"></i>
+                            <span>학부모 전용 보안 링크 복사하기</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
 
         </main>
 
-        <!-- Thumb-Friendly Bottom Navigation Bar (5 Items) -->
-        <nav class="safe-bottom bg-navy-950/95 backdrop-blur-md border-t border-white/10 px-2 py-1.5 flex items-center justify-around z-30 select-none">
-            <button onclick="switchView('home')" id="tab-home" class="nav-tab active flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-blue-400 font-bold transition-all">
-                <i class="fa-solid fa-house text-base"></i>
-                <span class="text-[10px] mt-1 font-semibold">홈</span>
+        <!-- Bottom Navigation Bar -->
+        <nav id="bottomNavBar" class="fixed bottom-0 w-full max-w-md bg-[#0b1124]/95 backdrop-blur-xl border-t border-white/10 px-3 py-2 flex justify-around items-center z-30">
+            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center py-1 px-3 text-amber-400 transition">
+                <i class="fa-solid fa-chart-pie text-base"></i>
+                <span class="text-[10px] font-bold mt-1">대시보드</span>
             </button>
-            <button onclick="switchView('records')" id="tab-records" class="nav-tab flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-slate-400 hover:text-white transition-all">
-                <i class="fa-solid fa-stopwatch text-base"></i>
-                <span class="text-[10px] mt-1 font-semibold">기록 측정</span>
+            <button onclick="switchTab('records')" id="nav-records" class="flex flex-col items-center py-1 px-3 text-slate-400 hover:text-slate-200 transition">
+                <i class="fa-solid fa-ranking-star text-base"></i>
+                <span class="text-[10px] font-bold mt-1">측정기록</span>
             </button>
-            <button onclick="switchView('consult')" id="tab-consult" class="nav-tab flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-slate-400 hover:text-white transition-all">
-                <i class="fa-solid fa-microphone text-base"></i>
-                <span class="text-[10px] mt-1 font-semibold">음성 상담</span>
+            <button onclick="switchTab('consult')" id="nav-consult" class="flex flex-col items-center py-1 px-3 text-slate-400 hover:text-slate-200 transition">
+                <i class="fa-solid fa-microphone-lines text-base"></i>
+                <span class="text-[10px] font-bold mt-1">음성상담</span>
             </button>
-            <button onclick="switchView('report')" id="tab-report" class="nav-tab flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-slate-400 hover:text-white transition-all">
-                <i class="fa-solid fa-chart-column text-base"></i>
-                <span class="text-[10px] mt-1 font-semibold">리포트</span>
-            </button>
-            <button onclick="switchView('kakao')" id="tab-kakao" class="nav-tab flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-amber-400/80 hover:text-amber-400 transition-all">
-                <i class="fa-solid fa-paper-plane text-base"></i>
-                <span class="text-[10px] mt-1 font-semibold">카톡 전송</span>
+            <button onclick="switchTab('share')" id="nav-share" class="flex flex-col items-center py-1 px-3 text-slate-400 hover:text-slate-200 transition">
+                <i class="fa-solid fa-comment-dots text-base"></i>
+                <span class="text-[10px] font-bold mt-1">카톡전송</span>
             </button>
         </nav>
 
-        <!-- ================= MODALS (Optimized for Mobile Screens) ================= -->
-
-        <!-- MODAL 1: ADD MEASUREMENT (Name-based, Dynamic Metrics) -->
-        <div id="recordModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
-            <div class="bg-navy-900 border-t sm:border border-slate-700/80 rounded-t-3xl sm:rounded-3xl w-full max-w-sm p-5 space-y-4 shadow-2xl animate-in slide-in-from-bottom duration-200">
-                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                    <div class="flex items-center gap-2">
-                        <div class="w-7 h-7 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center text-xs">
-                            <i class="fa-solid fa-plus"></i>
-                        </div>
-                        <h3 class="text-sm font-bold text-white">측정 항목 추가 및 기록</h3>
+        <!-- ======================= MODAL 1: 선수 명단 관리 (선수 전환 / 신규 등록 / 삭제) ======================= -->
+        <div id="playerModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+            <div class="w-full max-w-md bg-slate-900 border-t sm:border border-slate-700 rounded-t-3xl sm:rounded-3xl p-5 space-y-4 max-h-[85vh] flex flex-col">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-base font-black text-white">선수 명단 관리</h3>
+                        <p class="text-xs text-slate-400">선수 선택, 신규 등록 및 졸업/탈퇴 선수 삭제</p>
                     </div>
-                    <button onclick="closeModal('recordModal')" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center text-xs">
+                    <button onclick="closePlayerModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
 
-                <form id="recordMobileForm" onsubmit="handleMobileRecordSubmit(event)" class="space-y-3">
-                    <div>
-                        <div class="flex items-center justify-between mb-1">
-                            <label class="block text-[11px] font-semibold text-slate-300">선수 이름</label>
-                            <span class="text-[10px] text-blue-400 font-medium">선택 또는 직접 입력</span>
-                        </div>
-                        <select id="modalStudentName" onchange="toggleCustomStudentField(this.value)" class="w-full bg-navy-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
-                            <!-- Populated dynamically -->
-                        </select>
-                        <!-- New Student Direct Input Box (Hidden by default) -->
-                        <div id="customStudentBox" class="hidden mt-2">
-                            <input type="text" id="modalCustomStudentName" placeholder="새로운 선수 이름 입력 (예: 홍길동)" class="w-full bg-navy-950 border border-amber-500/80 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-500">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">측정 종목</label>
-                            <select id="modalMetricSelect" onchange="toggleCustomMetricField(this.value)" class="w-full bg-navy-950 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
-                                <option value="자유투 성공률">자유투 성공률</option>
-                                <option value="셔틀런 (왕복달리기)">셔틀런 (지구력)</option>
-                                <option value="드리블 기록">드리블 코스</option>
-                                <option value="서전트 점프">서전트 점프</option>
-                                <option value="레이업 성공률">레이업 성공률</option>
-                                <option value="custom">➕ 새로운 항목 직접 입력...</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">측정 일자</label>
-                            <input type="date" id="modalRecordDate" required class="w-full bg-navy-950 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
-                        </div>
-                    </div>
-
-                    <!-- Custom Metric input (hidden by default) -->
-                    <div id="customMetricBox" class="hidden">
-                        <label class="block text-[11px] font-semibold text-slate-300 mb-1">새 측정 종목명 입력</label>
-                        <input type="text" id="modalCustomMetricName" placeholder="예: 5m 왕복달리기, 싯업 등" class="w-full bg-navy-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
-                    </div>
-
-                    <div class="grid grid-cols-3 gap-2">
-                        <div class="col-span-2">
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">측정 수치 & 단위</label>
-                            <div class="flex gap-1.5">
-                                <input type="number" step="any" id="modalScoreValue" placeholder="기록 (예: 80)" required class="w-3/5 bg-navy-950 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none">
-                                <input type="text" id="modalUnitValue" placeholder="단위 (%,초,개,cm)" required class="w-2/5 bg-navy-950 border border-slate-700 rounded-xl px-2 py-2 text-xs text-white focus:outline-none">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-semibold text-slate-300 mb-1">목표치 (선택)</label>
-                            <input type="number" step="any" id="modalTargetValue" placeholder="목표" class="w-full bg-navy-950 border border-slate-700 rounded-xl px-2 py-2 text-xs text-white focus:outline-none">
-                        </div>
-                    </div>
-
-                    <div class="pt-2 flex gap-2">
-                        <button type="button" onclick="closeModal('recordModal')" class="w-1/3 bg-slate-800 text-slate-300 py-2.5 rounded-xl text-xs font-semibold">취소</button>
-                        <button type="submit" class="w-2/3 bg-blue-600 hover:bg-blue-500 active:scale-98 text-white py-2.5 rounded-xl text-xs font-bold shadow-lg shadow-blue-500/25">
-                            기록 저장하기
+                <!-- New Player Direct Registration -->
+                <div class="bg-slate-950/90 border border-slate-800 rounded-2xl p-3 space-y-2">
+                    <label class="text-[11px] font-bold text-amber-400 block">➕ 신규 선수 등록</label>
+                    <div class="flex space-x-2">
+                        <input id="newPlayerNameInput" type="text" placeholder="새 선수 이름 입력 (예: 정우성)" class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                        <input id="newPlayerPosInput" type="text" placeholder="포지션/학년" class="w-28 bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-amber-400">
+                        <button onclick="registerNewPlayer()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-3.5 py-2 rounded-xl transition shrink-0">
+                            등록
                         </button>
                     </div>
-                </form>
+                </div>
+
+                <!-- Registered Player List -->
+                <div id="playerModalList" class="space-y-2 overflow-y-auto pr-1 flex-1">
+                    <!-- JS Rendered -->
+                </div>
             </div>
         </div>
 
-        <!-- MODAL 2: STUDENT SELECTION SHEET -->
-        <div id="studentSwitchModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
-            <div class="bg-navy-900 border-t sm:border border-slate-700/80 rounded-t-3xl sm:rounded-3xl w-full max-w-sm p-5 space-y-4 shadow-2xl animate-in slide-in-from-bottom duration-200">
-                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                    <div>
-                        <h3 class="text-sm font-bold text-white">선수 명단 관리</h3>
-                        <p class="text-[10px] text-slate-400">선수 전환, 신규 등록 및 졸업생 삭제</p>
-                    </div>
-                    <button onclick="toggleStudentModal()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center text-xs">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
+        <!-- ======================= MODAL 2: 선수 삭제 확인 모달 ======================= -->
+        <div id="deleteConfirmModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="w-full max-w-xs bg-slate-900 border border-slate-700 rounded-3xl p-5 text-center space-y-4 shadow-2xl">
+                <div class="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto">
+                    <i class="fa-solid fa-trash-can text-xl"></i>
                 </div>
-
-                <!-- Quick Add New Player Box -->
-                <div class="bg-navy-950 p-2.5 rounded-2xl border border-slate-700/80 space-y-2">
-                    <span class="text-[11px] font-semibold text-slate-300 block">➕ 신규 선수 등록</span>
-                    <div class="flex gap-1.5">
-                        <input type="text" id="newStudentInputName" placeholder="선수 이름 입력 (예: 정우진)" class="w-full bg-navy-900 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500">
-                        <button onclick="addNewStudentFromUI()" class="bg-blue-600 hover:bg-blue-500 active:scale-95 text-white px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap shadow-md">
-                            추가
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Student List with Delete Button -->
                 <div class="space-y-1">
-                    <span class="text-[11px] font-semibold text-slate-400 block px-1">등록된 선수 목록 (<span id="studentCountBadge">3</span>명)</span>
-                    <div id="studentSelectList" class="space-y-2 max-h-60 overflow-y-auto hide-scrollbar pt-1">
-                        <!-- Injected dynamically -->
-                    </div>
+                    <h4 class="text-sm font-black text-white">선수 데이터를 삭제하시겠습니까?</h4>
+                    <p id="deleteConfirmDesc" class="text-xs text-slate-400 leading-relaxed"></p>
+                </div>
+                <div class="flex space-x-2">
+                    <button onclick="closeDeleteConfirmModal()" class="flex-1 py-2.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">취소</button>
+                    <button onclick="confirmDeletePlayer()" class="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-black">삭제하기</button>
                 </div>
             </div>
         </div>
 
-        <!-- MODAL 3: CONFIRM DELETE STUDENT PROMPT -->
-        <div id="confirmDeleteModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-            <div class="bg-navy-900 border border-red-500/30 rounded-3xl max-w-xs w-full p-5 text-center space-y-3 shadow-2xl">
-                <div class="w-12 h-12 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center text-xl mx-auto">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
+        <!-- ======================= MODAL 3: 새 측정 기록 추가 모달 ======================= -->
+        <div id="recordModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+            <div class="w-full max-w-md bg-slate-900 border-t sm:border border-slate-700 rounded-t-3xl sm:rounded-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-base font-black text-white">새 훈련 측정 기록 추가</h3>
+                        <p class="text-xs text-slate-400">측정일과 종목별 수치를 입력해 주세요</p>
+                    </div>
+                    <button onclick="closeRecordModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
                 </div>
-                <h4 class="text-sm font-bold text-white">선수를 정말 삭제할까요?</h4>
-                <p id="deleteConfirmTargetText" class="text-xs text-slate-300 leading-relaxed">
-                    선수를 삭제하면 측정 기록 및 상담 이력도 함께 제거됩니다.
-                </p>
-                <div class="pt-2 flex gap-2">
-                    <button onclick="closeModal('confirmDeleteModal')" class="w-1/2 bg-slate-800 text-slate-300 py-2 rounded-xl text-xs font-medium">취소</button>
-                    <button id="btnConfirmStudentDelete" onclick="executeDeleteStudentConfirmed()" class="w-1/2 bg-red-600 hover:bg-red-500 text-white py-2 rounded-xl text-xs font-bold shadow-lg shadow-red-500/30">
-                        삭제하기
+
+                <div class="space-y-3">
+                    <!-- Student Selection or Custom Input -->
+                    <div>
+                        <label class="text-xs font-bold text-slate-300 block mb-1">대상 선수</label>
+                        <select id="modalStudentSelect" onchange="handleModalStudentSelectChange()" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
+                            <!-- JS Rendered -->
+                        </select>
+                        <input id="modalCustomStudentInput" type="text" placeholder="새 선수 이름 직접 입력..." class="hidden mt-2 w-full bg-slate-950 border border-amber-400 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-bold text-slate-300 block mb-1">측정 날짜</label>
+                        <input id="recordDateInput" type="date" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-xs font-bold text-slate-300 block mb-1">셔틀런 (회)</label>
+                            <input id="recordShuttleInput" type="number" placeholder="예: 78" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-300 block mb-1">서전트 점프 (cm)</label>
+                            <input id="recordJumpInput" type="number" placeholder="예: 42" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-300 block mb-1">드리블 돌파 (초)</label>
+                            <input id="recordDribbleInput" type="number" step="0.1" placeholder="예: 11.8" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-300 block mb-1">자유투 성공률 (%)</label>
+                            <input id="recordFreethrowInput" type="number" placeholder="예: 80" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="text-xs font-bold text-slate-300 block mb-1">레이업 성공률 (%)</label>
+                            <input id="recordLayupInput" type="number" placeholder="예: 85" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white">
+                        </div>
+                    </div>
+
+                    <button onclick="saveNewRecord()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-xs shadow-lg mt-2">
+                        측정 데이터 저장하기
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Mobile Toast Notification -->
-        <div id="mobileToast" class="fixed top-14 left-1/2 -translate-x-1/2 z-50 bg-slate-900/95 border border-slate-700 text-white px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-2.5 transition-all duration-300 pointer-events-none opacity-0 -translate-y-4 max-w-[90%]">
-            <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
-            <span id="toastMsg" class="text-xs font-medium truncate">완료되었습니다.</span>
+        <!-- Toast Notification -->
+        <div id="toastBox" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 hidden bg-slate-900/95 border border-amber-400/50 text-white px-4 py-2.5 rounded-2xl shadow-2xl text-xs font-bold flex items-center space-x-2">
+            <i class="fa-solid fa-circle-check text-amber-400"></i>
+            <span id="toastMessage">저장되었습니다.</span>
         </div>
 
     </div>
 
-    <!-- Application Script -->
     <script>
-        // --- 0. SUPABASE CLIENT INITIALIZATION ---
-        const SUPABASE_URL = "https://anmylcihnnjcseuhzssw.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_hofdLghux8MxViwBnmtoqg_mhzAjWxP";
-        // Avoid naming collision with global window.supabase from the CDN script
-        const supabaseClient = (window.supabase && typeof window.supabase.createClient === 'function') 
-            ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) 
-            : null;
+        // ==========================================
+        // 1. 기본 설정 (Supabase / Kakao / 앱 도메인)
+        // ==========================================
+        const APP_DOMAIN = 'https://gangseobasketball.vercel.app';
+        const KAKAO_JS_KEY = 'eca52552f65e9564a22aa8eeacef3208';
+        const SUPABASE_URL = 'https://gfqxbjzuoexbgetbovrz.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdmcXhianp1b2V4YmdldGJvdnJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc4ODIwNDcsImV4cCI6MjA2MzQ1ODA0N30.X-demo-fallback-safe';
 
-        // --- 0-B. KAKAO SDK INITIALIZATION ---
-        const KAKAO_JS_KEY = "eca52552f65e9564a22aa8eeacef3208";
-        const APP_HOST_URL = "https://gangseobasketball.vercel.app";
-        if (window.Kakao && !window.Kakao.isInitialized()) {
-            window.Kakao.init(KAKAO_JS_KEY);
+        let supabaseClient = null;
+        try {
+            if (window.supabase && SUPABASE_URL && !SUPABASE_ANON_KEY.includes('fallback-safe')) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            }
+        } catch (err) {
+            console.warn('Supabase 로컬 저장소 모드로 동작합니다.');
         }
 
-        // --- 1. LOCAL REACTIVE STATE (Identified by NAME only) ---
-        let currentStudentName = "김지유";
-
-        let students = [
-            {
-                name: "김지유",
-                grade: "5학년",
-                number: "7번",
-                position: "가드",
-                score: 92,
-                quote: "정확한 3점슛과 날렵한 스틸 능력을 갖춘 강서초 에이스!",
-                photo: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=160&auto=format&fit=crop&q=80"
-            },
-            {
-                name: "박하은",
-                grade: "6학년",
-                number: "11번",
-                position: "센터",
-                score: 88,
-                quote: "안정적인 리바운드와 든든한 골밑 수비력의 기둥!",
-                photo: "https://images.unsplash.com/photo-1519766304817-4f37bda74a29?w=160&auto=format&fit=crop&q=80"
-            },
-            {
-                name: "이서아",
-                grade: "5학년",
-                number: "23번",
-                position: "포워드",
-                score: 85,
-                quote: "폭발적인 속공 돌파와 왕성한 체력을 자랑하는 스피드 스타!",
-                photo: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=160&auto=format&fit=crop&q=80"
+        try {
+            if (window.Kakao && !window.Kakao.isInitialized()) {
+                window.Kakao.init(KAKAO_JS_KEY);
             }
+        } catch (err) {
+            console.warn('Kakao SDK 초기화 대기 중:', err);
+        }
+
+        // ==========================================
+        // 2. 초기 샘플 데이터 및 로컬 상태 관리
+        // ==========================================
+        const STORAGE_KEY_STUDENTS = 'gs_basketball_students_v3';
+        const STORAGE_KEY_RECORDS = 'gs_basketball_records_v3';
+        const STORAGE_KEY_CONSULTS = 'gs_basketball_consults_v3';
+
+        const defaultStudents = [
+            { name: '김지유', position: '가드 • 5학년', photo: 'https://placehold.co/120x120/1e293b/fbbf24?text=JY' },
+            { name: '박하은', position: '포워드 • 6학년', photo: 'https://placehold.co/120x120/1e293b/38bdf8?text=HE' },
+            { name: '이서아', position: '센터 • 5학년', photo: 'https://placehold.co/120x120/1e293b/a855f7?text=SA' }
         ];
 
-        // Dynamic Records (Supports arbitrary metric names)
-        let records = [
-            { id: 1, student: "김지유", date: "2026-10-15", metric: "자유투 성공률", score: 80, unit: "%", target: 80 },
-            { id: 2, student: "김지유", date: "2026-10-15", metric: "셔틀런 (왕복달리기)", score: 78, unit: "개", target: 75 },
-            { id: 3, student: "김지유", date: "2026-10-14", metric: "드리블 기록", score: 12.3, unit: "초", target: 14 },
-            { id: 4, student: "김지유", date: "2026-10-12", metric: "서전트 점프", score: 46, unit: "cm", target: 45 },
-            { id: 5, student: "박하은", date: "2026-10-14", metric: "서전트 점프", score: 52, unit: "cm", target: 50 },
-            { id: 6, student: "박하은", date: "2026-10-13", metric: "자유투 성공률", score: 75, unit: "%", target: 80 },
-            { id: 7, student: "이서아", date: "2026-10-15", metric: "셔틀런 (왕복달리기)", score: 82, unit: "개", target: 80 },
-        ];
-
-        let consultHistory = [
-            {
-                id: 1,
-                student: "김지유",
-                date: "2026-10-12",
-                summary: "어머니와 전화 상담. 슛 폼 교정 후 지유의 자신감이 많이 향상되었다고 말씀하심.",
-                strength: "자유투 80% 달성 및 셔틀런 지구력 지속 향상",
-                action: "다음 주 친선 경기 1쿼터 선발 기용 및 학부모 참관 안내"
-            }
-        ];
-
-        let trendChart = null;
-        let radarChart = null;
-        let isRecording = false;
-        let speechRecognition = null;
-        let pendingDeleteStudentName = null;
-        let isParentMode = false;
-
-        // --- 2. INITIALIZATION ---
-        window.onload = async function() {
-            updateClock();
-            setInterval(updateClock, 10000);
-            document.getElementById('modalRecordDate').valueAsDate = new Date();
-
-            // Check URL query parameters for Parent Mode (e.g. ?student=김지유&mode=parent)
-            checkParentModeFromURL();
-
-            renderAllViews();
-            initCharts();
-
-            // Load live data from Supabase if connected
-            if (supabaseClient) {
-                await fetchSupabaseData();
-            }
+        const defaultRecords = {
+            '김지유': [
+                { id: 101, date: '2025-03-15', shuttle: 68, jump: 38, dribble: 12.6, freethrow: 72, layup: 75 },
+                { id: 102, date: '2025-04-15', shuttle: 74, jump: 40, dribble: 12.1, freethrow: 78, layup: 80 },
+                { id: 103, date: '2025-05-15', shuttle: 78, jump: 42, dribble: 11.8, freethrow: 80, layup: 84 }
+            ],
+            '박하은': [
+                { id: 201, date: '2025-04-10', shuttle: 72, jump: 44, dribble: 12.2, freethrow: 75, layup: 82 },
+                { id: 202, date: '2025-05-15', shuttle: 80, jump: 46, dribble: 11.6, freethrow: 82, layup: 86 }
+            ],
+            '이서아': [
+                { id: 301, date: '2025-04-12', shuttle: 65, jump: 39, dribble: 12.9, freethrow: 70, layup: 78 },
+                { id: 302, date: '2025-05-15', shuttle: 70, jump: 41, dribble: 12.4, freethrow: 76, layup: 82 }
+            ]
         };
 
-        function checkParentModeFromURL() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const targetStudent = urlParams.get('student');
-            const mode = urlParams.get('mode');
+        const defaultConsults = {
+            '김지유': [
+                {
+                    id: 9001,
+                    date: '2025-05-15 16:30',
+                    rawText: '오늘 훈련에서 왼손 레이업 스텝이 조금 빨라져서 마무리 성공률이 좋아졌습니다. 다만 3쿼터 후반에 체력이 떨어지면서 패스 미스가 두 번 나왔습니다.',
+                    summary: '오늘 훈련에서 왼손 레이업 스텝이 안정되며 마무리 성공률이 향상되었으나, 3쿼터 후반 체력 저하로 인해 패스 미스가 2회 발생함.',
+                    actionPlan: '1) 왼손 레이업 감각 유지를 위한 연속 마무리 15회 2세트 지속\n2) 후반 쿼터 체력 유지를 위한 20m 인터벌 셔틀런 15회×3세트 및 피로 상황 패스 정확도 훈련 실시'
+                }
+            ]
+        };
 
-            if (targetStudent) {
-                const decodedName = decodeURIComponent(targetStudent);
-                currentStudentName = decodedName;
-                
-                // If not found in default list, register a temporary profile for display
-                if (!students.some(s => s.name === decodedName)) {
+        let students = JSON.parse(localStorage.getItem(STORAGE_KEY_STUDENTS)) || defaultStudents;
+        let recordsByStudent = JSON.parse(localStorage.getItem(STORAGE_KEY_RECORDS)) || defaultRecords;
+        let consultsByStudent = JSON.parse(localStorage.getItem(STORAGE_KEY_CONSULTS)) || defaultConsults;
+
+        let currentStudentName = students[0]?.name || '김지유';
+        let isParentMode = false;
+        let pendingDeletePlayerName = null;
+
+        let trendChartInstance = null;
+        let radarChartInstance = null;
+
+        function persistAllData() {
+            localStorage.setItem(STORAGE_KEY_STUDENTS, JSON.stringify(students));
+            localStorage.setItem(STORAGE_KEY_RECORDS, JSON.stringify(recordsByStudent));
+            localStorage.setItem(STORAGE_KEY_CONSULTS, JSON.stringify(consultsByStudent));
+        }
+
+        function showToast(msg) {
+            const box = document.getElementById('toastBox');
+            const text = document.getElementById('toastMessage');
+            text.textContent = msg;
+            box.classList.remove('hidden');
+            setTimeout(() => box.classList.add('hidden'), 2600);
+        }
+
+        // ==========================================
+        // 3. URL 파라미터(학부모 전용 보안 모드) 감지
+        // ==========================================
+        function checkParentModeFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            const studentParam = params.get('student');
+            const modeParam = params.get('mode');
+
+            if (studentParam) {
+                const decoded = decodeURIComponent(studentParam).trim();
+                const exists = students.find(s => s.name === decoded);
+                if (!exists) {
                     students.push({
-                        name: decodedName,
-                        grade: "5학년",
-                        number: "선수",
-                        position: "선수",
-                        score: 90,
-                        quote: `${decodedName} 선수의 개인 성장 리포트입니다.`,
-                        photo: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=160&auto=format&fit=crop&q=80"
+                        name: decoded,
+                        position: '강서초 농구부',
+                        photo: `https://placehold.co/120x120/1e293b/fbbf24?text=${encodeURIComponent(decoded.slice(0, 2))}`
                     });
                 }
+                currentStudentName = decoded;
             }
 
-            if (mode === 'parent' || targetStudent) {
+            if (modeParam === 'parent') {
                 isParentMode = true;
-                applyParentViewRestrictions();
+                document.getElementById('parentModeBadge').classList.remove('hidden');
+                document.getElementById('headerSubStatus').textContent = `${currentStudentName} 학부모님 전용 열람 모드`;
+
+                // 코치용 조작 버튼 모두 비활성화 및 숨김
+                const switcherBtn = document.getElementById('studentSwitcherBtn');
+                switcherBtn.onclick = null;
+                switcherBtn.classList.remove('hover:bg-slate-700');
+                document.getElementById('studentSwitcherChevron').classList.add('hidden');
+                document.getElementById('quickAddRecordBtn').classList.add('hidden');
+                document.getElementById('photoUploadLabel').classList.add('hidden');
+                document.getElementById('recordsTabAddBtn').classList.add('hidden');
+                document.getElementById('nav-consult').classList.add('hidden');
+                document.getElementById('nav-share').classList.add('hidden');
             }
         }
 
-        function applyParentViewRestrictions() {
-            // Adjust header
-            const roleBadge = document.getElementById('appRoleBadge');
-            const roleSub = document.getElementById('appRoleSubText');
-            const coachControls = document.getElementById('coachTopControls');
-            const parentIndicator = document.getElementById('parentChildIndicator');
-            const parentChildName = document.getElementById('parentChildName');
-
-            if (roleBadge) {
-                roleBadge.innerText = "학부모 전용";
-                roleBadge.className = "text-[9px] px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold";
-            }
-            if (roleSub) roleSub.innerText = "학생별 맞춤 성장 분석";
-            if (coachControls) coachControls.classList.add('hidden');
-            if (parentIndicator) {
-                parentIndicator.classList.remove('hidden');
-                if (parentChildName) parentChildName.innerText = currentStudentName;
-            }
-
-            // Hide tabs not meant for parents (e.g. recording entries, coach consultation history, coach send panel)
-            const tabRecords = document.getElementById('tab-records');
-            const tabConsult = document.getElementById('tab-consult');
-            const tabKakao = document.getElementById('tab-kakao');
-            if (tabRecords) tabRecords.classList.add('hidden');
-            if (tabConsult) tabConsult.classList.add('hidden');
-            if (tabKakao) tabKakao.classList.add('hidden');
-
-            // Hide camera edit badge on photo in parent mode
-            const photoBadge = document.querySelector('button[title="학생 사진 등록/변경"]');
-            if (photoBadge) photoBadge.classList.add('hidden');
-
-            // Set default view to Growth Report for parents
-            switchView('report');
+        // ==========================================
+        // 4. 점수 계산 및 대시보드 렌더링
+        // ==========================================
+        function calculateTotalScore(rec) {
+            if (!rec) return 80;
+            const shootAvg = (Number(rec.freethrow) + Number(rec.layup)) / 2;
+            const shuttleScore = Math.min(100, Math.round((Number(rec.shuttle) / 85) * 100));
+            const jumpScore = Math.min(100, Math.round((Number(rec.jump) / 50) * 100));
+            const dribbleScore = Math.min(100, Math.max(50, Math.round(100 - (Number(rec.dribble) - 10.5) * 12)));
+            return Math.round(shootAvg * 0.4 + shuttleScore * 0.2 + jumpScore * 0.2 + dribbleScore * 0.2);
         }
 
-        async function fetchSupabaseData() {
-            try {
-                // Fetch Students
-                const { data: dbStudents, error: errS } = await supabaseClient.from('students').select('*');
-                if (!errS && dbStudents && dbStudents.length > 0) {
-                    students = dbStudents.map(s => ({
-                        name: s.name,
-                        grade: s.grade || '5학년',
-                        number: s.number || '7번',
-                        position: s.position || '가드',
-                        score: s.score || 90,
-                        quote: s.quote || '성실하게 훈련에 임하는 강서초 선수!',
-                        photo: s.photo_url || 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=160&auto=format&fit=crop&q=80'
-                    }));
-                }
-
-                // Fetch Training Records
-                const { data: dbRecords, error: errR } = await supabaseClient.from('training_records').select('*').order('id', { ascending: false });
-                if (!errR && dbRecords && dbRecords.length > 0) {
-                    records = dbRecords.map(r => ({
-                        id: r.id,
-                        student: r.student_name,
-                        date: r.recorded_date,
-                        metric: r.metric,
-                        score: Number(r.score),
-                        unit: r.unit,
-                        target: r.target ? Number(r.target) : null
-                    }));
-                }
-
-                // Fetch Consultations
-                const { data: dbConsults, error: errC } = await supabaseClient.from('consultations').select('*').order('id', { ascending: false });
-                if (!errC && dbConsults && dbConsults.length > 0) {
-                    consultHistory = dbConsults.map(c => ({
-                        id: c.id,
-                        student: c.student_name,
-                        date: c.consult_date,
-                        summary: c.summary,
-                        strength: c.strength,
-                        action: c.action
-                    }));
-                }
-
-                renderAllViews();
-                triggerToast("Supabase 클라우드 데이터 동기화 완료! ☁️");
-            } catch (e) {
-                console.warn("Supabase fetch notice:", e);
-            }
-        }
-
-        // --- 4. RENDER ALL COMPONENTS ---
-        function renderAllViews() {
-            const s = students.find(st => st.name === currentStudentName) || students[0];
-
-            // Header & Pills
-            document.getElementById('currentStudentPill').innerText = s.name;
-            document.getElementById('recordsActiveStudentBadge').innerText = s.name;
-            document.getElementById('kakaoTargetPlayer').innerText = s.name;
-            document.getElementById('reportCardName').innerText = `${s.name} 선수 성장 분석서`;
-
-            // Home View
-            document.getElementById('homePlayerName').innerText = s.name;
-            document.getElementById('homePlayerPosition').innerText = s.position;
-            document.getElementById('homePlayerMeta').innerText = `강서초 ${s.grade} • ${s.number}`;
-            document.getElementById('homePlayerQuote').innerText = `"${s.quote}"`;
-            document.getElementById('homePlayerImg').src = s.photo;
-            
-            // Sync photos with Report & Kakao views
-            const reportImg = document.getElementById('reportCardImg');
-            if (reportImg) reportImg.src = s.photo;
-            const kakaoThumb = document.getElementById('kakaoStudentThumb');
-            if (kakaoThumb) kakaoThumb.src = s.photo;
-
-            document.getElementById('homeScore').innerText = s.score;
-            document.getElementById('kakaoScorePreview').innerText = `${s.score}점 (+8점 상승)`;
-
-            // Render Dynamic Horizontal Cards & Subviews
-            renderHomeMetrics(s.name);
-            renderRecordsMobileList(s.name);
-            renderConsultHistory(s.name);
-            renderStudentSelectionOptions();
-        }
-
-        // --- 4-B. STUDENT PHOTO UPLOAD HANDLER ---
-        function triggerPhotoUploadDialog() {
-            document.getElementById('studentPhotoFileInput').click();
-        }
-
-        async function handleStudentPhotoUpload(event) {
-            const file = event.target.files && event.target.files[0];
-            if (!file) return;
-
-            // Check if file is image
-            if (!file.type.startsWith('image/')) {
-                triggerToast("이미지 파일(JPG, PNG 등)만 등록 가능합니다.", "error");
-                return;
-            }
-
-            // Client-side instant preview using FileReader
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                const base64Photo = e.target.result;
-                
-                // Update local in-memory student record
-                const currentStudent = students.find(s => s.name === currentStudentName);
-                if (currentStudent) {
-                    currentStudent.photo = base64Photo;
-                }
-
-                // Immediately update preview on home card and others
-                document.getElementById('homePlayerImg').src = base64Photo;
-                const reportImg = document.getElementById('reportCardImg');
-                if (reportImg) reportImg.src = base64Photo;
-                const kakaoThumb = document.getElementById('kakaoStudentThumb');
-                if (kakaoThumb) kakaoThumb.src = base64Photo;
-
-                // Also update the student switcher list thumbnail
-                renderStudentSelectionOptions();
-
-                // Save to Supabase Storage & DB if online
-                if (supabaseClient) {
-                    try {
-                        const fileExt = file.name.split('.').pop() || 'png';
-                        const filePath = `${currentStudentName}_${Date.now()}.${fileExt}`;
-                        
-                        const { data: storageData, error: storageErr } = await supabaseClient.storage
-                            .from('student-photos')
-                            .upload(filePath, file, { upsert: true });
-
-                        if (!storageErr) {
-                            const { data: publicUrlData } = supabaseClient.storage
-                                .from('student-photos')
-                                .getPublicUrl(filePath);
-
-                            if (publicUrlData && publicUrlData.publicUrl) {
-                                currentStudent.photo = publicUrlData.publicUrl;
-                                await supabaseClient
-                                    .from('students')
-                                    .update({ photo_url: publicUrlData.publicUrl })
-                                    .eq('name', currentStudentName);
-                            }
-                        }
-                    } catch (err) {
-                        console.warn("Supabase storage sync fallback:", err);
-                    }
-                }
-
-                triggerToast(`[${currentStudentName}] 선수의 새 사진이 Supabase 저장소에 등록되었습니다! 📸`);
-            };
-            reader.readAsDataURL(file);
-
-            // Reset input so the same image can be re-selected if edited
-            event.target.value = "";
-        }
-
-        function renderHomeMetrics(studentName) {
-            const container = document.getElementById('homeMetricsScroll');
-            container.innerHTML = '';
-
-            const studentRecs = records.filter(r => r.student === studentName);
-            const listToDisplay = studentRecs.length > 0 ? studentRecs : [
-                { metric: "자유투 성공률", score: 80, unit: "%" },
-                { metric: "셔틀런", score: 78, unit: "개" },
-                { metric: "드리블 기록", score: 12.3, unit: "초" }
-            ];
-
-            const colors = [
-                { border: 'border-blue-500/30', bg: 'from-blue-600/20 to-blue-950/40', text: 'text-blue-400' },
-                { border: 'border-purple-500/30', bg: 'from-purple-600/20 to-purple-950/40', text: 'text-purple-400' },
-                { border: 'border-emerald-500/30', bg: 'from-emerald-600/20 to-emerald-950/40', text: 'text-emerald-400' },
-                { border: 'border-amber-500/30', bg: 'from-amber-600/20 to-amber-950/40', text: 'text-amber-400' }
-            ];
-
-            listToDisplay.forEach((r, idx) => {
-                const c = colors[idx % colors.length];
-                const card = document.createElement('div');
-                card.className = `flex-shrink-0 w-32 bg-gradient-to-b ${c.bg} border ${c.border} rounded-2xl p-3 snap-start shadow-md flex flex-col justify-between`;
-                card.innerHTML = `
-                    <div class="flex items-center justify-between">
-                        <span class="text-[11px] text-slate-300 font-medium truncate">${r.metric}</span>
-                        <i class="fa-solid fa-chart-simple text-[10px] ${c.text}"></i>
-                    </div>
-                    <div class="mt-2">
-                        <span class="text-xl font-black text-white">${r.score}<span class="text-[10px] font-normal text-slate-400 ml-0.5">${r.unit}</span></span>
-                        <span class="text-[9px] text-emerald-400 block mt-0.5"><i class="fa-solid fa-arrow-trend-up"></i> 최신 기록</span>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function renderRecordsMobileList(studentName) {
-            const container = document.getElementById('recordsListMobile');
-            container.innerHTML = '';
-            const studentRecs = records.filter(r => r.student === studentName);
-            document.getElementById('recordsCount').innerText = studentRecs.length;
-
-            if (studentRecs.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-10 text-slate-500 text-xs">
-                        기록된 측정 결과가 없습니다.<br>상단 [+ 새 측정 추가] 버튼을 눌러 등록해 보세요!
-                    </div>
-                `;
-                return;
-            }
-
-            studentRecs.forEach(r => {
-                const item = document.createElement('div');
-                item.className = "bg-navy-850 border border-slate-700/60 p-3 rounded-2xl flex items-center justify-between shadow-sm";
-                item.innerHTML = `
-                    <div class="space-y-0.5">
-                        <div class="flex items-center gap-1.5">
-                            <span class="text-xs font-bold text-white">${r.metric}</span>
-                            <span class="text-[10px] text-slate-400">• ${r.date}</span>
-                        </div>
-                        <div class="flex items-center gap-2 text-xs">
-                            <span class="text-amber-400 font-extrabold">${r.score} ${r.unit}</span>
-                            ${r.target ? `<span class="text-[10px] text-slate-400">(목표: ${r.target}${r.unit})</span>` : ''}
-                        </div>
-                    </div>
-                    <button onclick="deleteRecordItem(${r.id})" class="w-7 h-7 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 flex items-center justify-center text-xs transition-colors">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </button>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        function renderConsultHistory(studentName) {
-            const container = document.getElementById('consultNotesListMobile');
-            container.innerHTML = '';
-            const history = consultHistory.filter(c => c.student === studentName);
-
-            if (history.length === 0) {
-                container.innerHTML = `<div class="text-center py-6 text-slate-500 text-xs">저장된 상담 이력이 없습니다.</div>`;
-                return;
-            }
-
-            history.forEach(c => {
-                const el = document.createElement('div');
-                el.className = "bg-navy-850 border border-slate-700/60 p-3.5 rounded-2xl space-y-2 shadow-sm text-xs";
-                el.innerHTML = `
-                    <div class="flex items-center justify-between border-b border-slate-700 pb-1.5">
-                        <span class="font-bold text-purple-300"><i class="fa-solid fa-calendar-check mr-1"></i> ${c.date} 상담</span>
-                        <div class="flex items-center gap-1.5">
-                            <span class="text-[10px] text-slate-400">강서초 코치</span>
-                            ${!isParentMode ? `
-                            <button onclick="deleteConsultItem(${c.id})" class="w-6 h-6 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 active:scale-90 flex items-center justify-center text-[11px] transition-colors ml-1" title="상담 내역 삭제">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                            ` : ''}
-                        </div>
-                    </div>
-                    <div class="space-y-1 text-slate-200 text-[11px] leading-relaxed">
-                        <p><b class="text-white">📌 요약:</b> ${c.summary}</p>
-                        <p><b class="text-emerald-400">💡 강점:</b> ${c.strength}</p>
-                        <p><b class="text-blue-400">🎯 액션:</b> ${c.action}</p>
-                    </div>
-                `;
-                container.appendChild(el);
-            });
-        }
-
-        async function deleteConsultItem(id) {
-            const targetConsult = consultHistory.find(c => c.id === id);
-            consultHistory = consultHistory.filter(c => c.id !== id);
-            renderConsultHistory(currentStudentName);
-
-            if (supabaseClient && targetConsult) {
-                try {
-                    await supabaseClient.from('consultations').delete().eq('id', id);
-                } catch (e) {
-                    console.warn("Supabase consultation delete fallback:", e);
-                }
-            }
-            triggerToast("상담 내역이 삭제되었습니다.", "error");
-        }
-
-        function renderStudentSelectionOptions() {
-            const listContainer = document.getElementById('studentSelectList');
-            const modalSelect = document.getElementById('modalStudentName');
-            const countBadge = document.getElementById('studentCountBadge');
-
-            if (countBadge) countBadge.innerText = students.length;
-            listContainer.innerHTML = '';
-            modalSelect.innerHTML = '';
-
-            students.forEach(s => {
-                // In modal select
-                modalSelect.innerHTML += `<option value="${s.name}">${s.name} (${s.grade} ${s.position})</option>`;
-
-                // In switch sheet item container
-                const itemWrapper = document.createElement('div');
-                itemWrapper.className = `w-full p-2 rounded-xl border flex items-center justify-between transition-all ${s.name === currentStudentName ? 'bg-blue-600/15 border-blue-500/80' : 'bg-navy-950 border-slate-700/80 hover:bg-navy-900'}`;
-
-                // Left clickable area to select student
-                const selectBtn = document.createElement('div');
-                selectBtn.className = "flex items-center gap-2.5 flex-1 min-w-0 cursor-pointer";
-                selectBtn.onclick = () => {
-                    currentStudentName = s.name;
-                    toggleStudentModal();
-                    renderAllViews();
-                    triggerToast(`${s.name} 선수로 전환되었습니다.`);
-                };
-                selectBtn.innerHTML = `
-                    <img src="${s.photo}" class="w-8 h-8 rounded-full object-cover border border-slate-600">
-                    <div class="text-left min-w-0">
-                        <div class="flex items-center gap-1.5">
-                            <span class="text-xs font-bold text-white truncate">${s.name}</span>
-                            ${s.name === currentStudentName ? '<span class="text-[9px] bg-blue-500/20 text-blue-400 px-1.5 py-0.2 rounded font-bold">선택됨</span>' : ''}
-                        </div>
-                        <span class="text-[10px] text-slate-400 block">${s.grade} • ${s.position}</span>
-                    </div>
-                `;
-
-                // Right action area: Delete trash button
-                const deleteBtn = document.createElement('button');
-                deleteBtn.type = "button";
-                deleteBtn.title = "선수 삭제 (졸업/탈퇴)";
-                deleteBtn.className = "w-7 h-7 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 active:scale-90 flex items-center justify-center text-xs transition-colors ml-2";
-                deleteBtn.innerHTML = `<i class="fa-solid fa-trash-can"></i>`;
-                deleteBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    askDeleteStudent(s.name);
-                };
-
-                itemWrapper.appendChild(selectBtn);
-                itemWrapper.appendChild(deleteBtn);
-                listContainer.appendChild(itemWrapper);
-            });
-
-            modalSelect.value = currentStudentName;
-        }
-
-        // --- 4-C. ADD & DELETE STUDENT HANDLERS ---
-        async function addNewStudentFromUI() {
-            const input = document.getElementById('newStudentInputName');
-            const name = input.value.trim();
-
-            if (!name) {
-                triggerToast("선수 이름을 입력해주세요.", "error");
-                return;
-            }
-
-            if (students.some(s => s.name === name)) {
-                triggerToast("이미 등록된 선수 이름입니다.", "error");
-                return;
-            }
-
-            const newStudentObj = {
-                name: name,
-                grade: "5학년",
-                number: `${Math.floor(Math.random() * 30) + 1}번`,
-                position: "선수",
-                score: 85,
-                quote: "새롭게 팀에 합류하여 열정을 불태우는 기대주!",
-                photo: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=160&auto=format&fit=crop&q=80"
+        function renderAllUI() {
+            const studentObj = students.find(s => s.name === currentStudentName) || {
+                name: currentStudentName,
+                position: '가드 / 포워드',
+                photo: 'https://placehold.co/120x120/1e293b/fbbf24?text=GS'
             };
 
-            students.push(newStudentObj);
-            currentStudentName = name;
-            input.value = "";
+            const records = recordsByStudent[currentStudentName] || [];
+            const latest = records[records.length - 1] || {
+                date: '기록 없음',
+                shuttle: 70,
+                jump: 40,
+                dribble: 12.0,
+                freethrow: 75,
+                layup: 78
+            };
+            const prev = records.length > 1 ? records[records.length - 2] : null;
 
-            renderAllViews();
-            triggerToast(`[${name}] 선수가 새로 등록되었습니다! 🎉`);
+            const currentTotal = calculateTotalScore(latest);
+            const prevTotal = prev ? calculateTotalScore(prev) : currentTotal;
+            const diff = currentTotal - prevTotal;
 
-            // Save to Supabase
-            if (supabaseClient) {
-                try {
-                    await supabaseClient.from('students').insert([{
-                        name: newStudentObj.name,
-                        grade: newStudentObj.grade,
-                        number: newStudentObj.number,
-                        position: newStudentObj.position,
-                        score: newStudentObj.score,
-                        quote: newStudentObj.quote,
-                        photo_url: newStudentObj.photo
-                    }]);
-                } catch (e) {
-                    console.warn("Supabase insert student fallback:", e);
-                }
-            }
+            // 상단 배지 및 프로필 영역
+            document.getElementById('currentStudentBadge').textContent = currentStudentName;
+            document.getElementById('profileName').textContent = `${currentStudentName} 선수`;
+            document.getElementById('profilePositionBadge').textContent = studentObj.position || '강서초 농구부';
+            document.getElementById('profileImage').src = studentObj.photo || 'https://placehold.co/120x120/1e293b/fbbf24?text=GS';
+            document.getElementById('profileUpdatedDate').textContent = `최근 측정일: ${latest.date}`;
+
+            document.getElementById('heroTotalScore').textContent = currentTotal;
+            const diffEl = document.getElementById('heroScoreDiff');
+            diffEl.textContent = diff >= 0 ? `+${diff}` : `${diff}`;
+            diffEl.className = `text-[11px] font-bold ${diff >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
+
+            const shootAvg = Math.round((Number(latest.freethrow) + Number(latest.layup)) / 2);
+            document.getElementById('metricShootRate').textContent = `${shootAvg}%`;
+            document.getElementById('metricShuttle').textContent = `${latest.shuttle}회`;
+            document.getElementById('metricAgility').textContent = `${latest.jump}cm`;
+            document.getElementById('metricDribbleSub').textContent = `드리블 ${latest.dribble}초`;
+
+            // AI 코칭 브리핑 자동 생성
+            document.getElementById('aiCoachBrief').textContent =
+                `${currentStudentName} 선수는 최근 측정에서 종합지수 ${currentTotal}점(슛 성공률 ${shootAvg}%, 셔틀런 ${latest.shuttle}회, 서전트 ${latest.jump}cm)을 기록했습니다. ` +
+                (shootAvg >= 80
+                    ? `슛 밸런스가 매우 안정적이며, 실전 압박 수비 상황에서의 빠른 캐치앤슛과 체력 유지 훈련을 병행하면 경기 지배력이 한층 높아질 것입니다.`
+                    : `기본 드리블 리듬이 좋아지고 있으므로 자유투 루틴 고정 및 골밑 레이업 스텝 마무리 반복 훈련을 통해 득점 성공률을 끌어올리는 것을 권장합니다.`);
+
+            // 측정 기록 히스토리 렌더링
+            renderMeasurementHistory(records);
+
+            // 상담 히스토리 렌더링
+            renderConsultationHistory();
+
+            // 카톡 공유 프리뷰 업데이트
+            updateSharePreview(currentTotal, shootAvg, latest.shuttle);
+
+            // 차트 업데이트
+            updateCharts(records, latest);
         }
 
-        function askDeleteStudent(studentName) {
-            if (students.length <= 1) {
-                triggerToast("최소 1명의 선수는 등록되어 있어야 합니다.", "error");
+        function renderMeasurementHistory(records) {
+            const container = document.getElementById('measurementHistoryList');
+            if (!records || records.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 py-4 text-center">등록된 측정 기록이 없습니다.</p>`;
                 return;
             }
 
-            pendingDeleteStudentName = studentName;
-            const targetText = document.getElementById('deleteConfirmTargetText');
-            if (targetText) {
-                targetText.innerHTML = `<b class="text-white font-bold">[${studentName}]</b> 선수를 삭제하시겠습니까?<br><span class="text-[11px] text-slate-400">관련된 측정 데이터도 함께 삭제됩니다.</span>`;
-            }
-            const modal = document.getElementById('confirmDeleteModal');
-            if (modal) modal.classList.remove('hidden');
+            container.innerHTML = [...records].reverse().map(rec => {
+                const score = calculateTotalScore(rec);
+                const shootAvg = Math.round((Number(rec.freethrow) + Number(rec.layup)) / 2);
+                return `
+                    <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-3 flex items-center justify-between">
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs font-extrabold text-white">${rec.date}</span>
+                                <span class="text-[10px] font-bold bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-md">종합 ${score}점</span>
+                            </div>
+                            <p class="text-[11px] text-slate-400 mt-1">
+                                슛평균 ${shootAvg}% (자유투 ${rec.freethrow}%/레이업 ${rec.layup}%) · 셔틀런 ${rec.shuttle}회 · 점프 ${rec.jump}cm · 드리블 ${rec.dribble}초
+                            </p>
+                        </div>
+                        ${!isParentMode ? `
+                        <button onclick="deleteMeasurementRecord(${rec.id})" class="text-slate-500 hover:text-rose-400 p-2 transition" title="기록 삭제">
+                            <i class="fa-solid fa-trash-can text-xs"></i>
+                        </button>` : ''}
+                    </div>
+                `;
+            }).join('');
         }
 
-        async function executeDeleteStudentConfirmed() {
-            if (!pendingDeleteStudentName) return;
-            const deletedName = pendingDeleteStudentName;
-
-            // Remove from local memory
-            students = students.filter(s => s.name !== deletedName);
-            records = records.filter(r => r.student !== deletedName);
-            consultHistory = consultHistory.filter(c => c.student !== deletedName);
-
-            // If active player was deleted, switch to first remaining
-            if (currentStudentName === deletedName) {
-                currentStudentName = students[0].name;
-            }
-
-            closeModal('confirmDeleteModal');
-            renderAllViews();
-            triggerToast(`[${deletedName}] 선수가 명단에서 삭제되었습니다.`, "error");
-
-            // Delete from Supabase
-            if (supabaseClient) {
-                try {
-                    await supabaseClient.from('students').delete().eq('name', deletedName);
-                    await supabaseClient.from('training_records').delete().eq('student_name', deletedName);
-                    await supabaseClient.from('consultations').delete().eq('student_name', deletedName);
-                } catch (e) {
-                    console.warn("Supabase student delete fallback:", e);
-                }
-            }
-
-            pendingDeleteStudentName = null;
+        function deleteMeasurementRecord(recordId) {
+            const list = recordsByStudent[currentStudentName] || [];
+            recordsByStudent[currentStudentName] = list.filter(r => r.id !== recordId);
+            persistAllData();
+            renderAllUI();
+            showToast('측정 기록이 삭제되었습니다.');
         }
 
-        // --- 5. CHARTS (Optimized for Mobile Screens) ---
+        // ==========================================
+        // 5. Chart.js 그래프 초기화 및 업데이트
+        // ==========================================
         function initCharts() {
-            // Trend Line Chart
-            const trendCtx = document.getElementById('mobileTrendChart').getContext('2d');
-            trendChart = new Chart(trendCtx, {
+            const trendCtx = document.getElementById('trendChart').getContext('2d');
+            trendChartInstance = new Chart(trendCtx, {
                 type: 'line',
                 data: {
-                    labels: ['8월', '9월', '10월'],
+                    labels: [],
                     datasets: [
                         {
-                            label: '자유투 성공률 (%)',
-                            data: [60, 70, 80],
-                            borderColor: '#3b82f6',
-                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            label: 'AI 종합점수',
+                            data: [],
+                            borderColor: '#fbbf24',
+                            backgroundColor: 'rgba(251, 191, 36, 0.15)',
                             borderWidth: 2.5,
                             tension: 0.35,
+                            fill: true,
                             pointRadius: 4,
-                            pointBackgroundColor: '#3b82f6',
-                            fill: true
+                            pointBackgroundColor: '#fbbf24'
                         },
                         {
-                            label: '드리블 기록 (초)',
-                            data: [15.2, 14.0, 12.3],
-                            borderColor: '#fbbf24',
+                            label: '슛 성공률(%)',
+                            data: [],
+                            borderColor: '#34d399',
                             backgroundColor: 'transparent',
                             borderWidth: 2,
                             borderDash: [4, 4],
                             tension: 0.35,
                             pointRadius: 3,
-                            pointBackgroundColor: '#fbbf24'
+                            pointBackgroundColor: '#34d399'
                         }
                     ]
                 },
@@ -1291,565 +719,702 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            labels: {
-                                color: '#94a3b8',
-                                font: { size: 10, family: 'Pretendard' },
-                                boxWidth: 12
-                            }
+                            labels: { color: '#cbd5e1', font: { size: 10, weight: 'bold' } }
                         }
                     },
                     scales: {
                         x: {
-                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                            ticks: { color: '#64748b', font: { size: 10 } }
+                            ticks: { color: '#94a3b8', font: { size: 10 } },
+                            grid: { color: 'rgba(255,255,255,0.05)' }
                         },
                         y: {
-                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                            ticks: { color: '#64748b', font: { size: 10 } }
+                            min: 40,
+                            max: 100,
+                            ticks: { color: '#94a3b8', font: { size: 10 } },
+                            grid: { color: 'rgba(255,255,255,0.05)' }
                         }
                     }
                 }
             });
 
-            // Radar Chart for Report View
-            const radarCtx = document.getElementById('mobileRadarChart').getContext('2d');
-            radarChart = new Chart(radarCtx, {
+            const radarCtx = document.getElementById('radarChart').getContext('2d');
+            radarChartInstance = new Chart(radarCtx, {
                 type: 'radar',
                 data: {
-                    labels: ['슈팅 정확도', '스피드/민첩성', '경기 지구력', '수비 리바운드', '전술 이해도'],
-                    datasets: [
-                        {
-                            label: '현재 능력치',
-                            data: [88, 85, 92, 78, 86],
-                            backgroundColor: 'rgba(59, 130, 246, 0.25)',
-                            borderColor: '#3b82f6',
-                            borderWidth: 2,
-                            pointBackgroundColor: '#3b82f6',
-                            pointRadius: 3
-                        },
-                        {
-                            label: '입부 초기',
-                            data: [65, 70, 68, 60, 62],
-                            backgroundColor: 'rgba(148, 163, 184, 0.15)',
-                            borderColor: '#64748b',
-                            borderWidth: 1.5,
-                            pointBackgroundColor: '#64748b',
-                            pointRadius: 2
-                        }
-                    ]
+                    labels: ['지구력(셔틀런)', '순발력(점프)', '민첩성(드리블)', '자유투 정확도', '레이업 마무리'],
+                    datasets: [{
+                        label: '현재 역량 밸런스',
+                        data: [80, 80, 80, 80, 80],
+                        backgroundColor: 'rgba(249, 115, 22, 0.25)',
+                        borderColor: '#f97316',
+                        pointBackgroundColor: '#fbbf24',
+                        borderWidth: 2
+                    }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            labels: {
-                                color: '#cbd5e1',
-                                font: { size: 10, family: 'Pretendard' },
-                                boxWidth: 10
-                            }
-                        }
+                        legend: { display: false }
                     },
                     scales: {
                         r: {
-                            angleLines: { color: 'rgba(255, 255, 255, 0.08)' },
-                            grid: { color: 'rgba(255, 255, 255, 0.08)' },
-                            pointLabels: {
-                                color: '#94a3b8',
-                                font: { size: 10, family: 'Pretendard' }
-                            },
-                            ticks: {
-                                display: false,
-                                maxTicksLimit: 5
-                            },
-                            suggestedMin: 40,
-                            suggestedMax: 100
+                            min: 30,
+                            max: 100,
+                            angleLines: { color: 'rgba(255,255,255,0.1)' },
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            pointLabels: { color: '#e2e8f0', font: { size: 11, weight: 'bold' } },
+                            ticks: { display: false }
                         }
                     }
                 }
             });
         }
 
-        // --- 6. VOICE RECORDING & AI SUMMARY (Real Web Speech Recognition STT) ---
+        function updateCharts(records, latest) {
+            if (!trendChartInstance || !radarChartInstance) return;
+
+            const labels = records.map(r => r.date.slice(5));
+            const totalScores = records.map(r => calculateTotalScore(r));
+            const shootRates = records.map(r => Math.round((Number(r.freethrow) + Number(r.layup)) / 2));
+
+            trendChartInstance.data.labels = labels.length ? labels : ['최근'];
+            trendChartInstance.data.datasets[0].data = totalScores.length ? totalScores : [80];
+            trendChartInstance.data.datasets[1].data = shootRates.length ? shootRates : [75];
+            trendChartInstance.update();
+
+            const shuttleNorm = Math.min(100, Math.round((Number(latest.shuttle) / 85) * 100));
+            const jumpNorm = Math.min(100, Math.round((Number(latest.jump) / 50) * 100));
+            const dribbleNorm = Math.min(100, Math.max(50, Math.round(100 - (Number(latest.dribble) - 10.5) * 12)));
+
+            radarChartInstance.data.datasets[0].data = [
+                shuttleNorm,
+                jumpNorm,
+                dribbleNorm,
+                Number(latest.freethrow) || 75,
+                Number(latest.layup) || 78
+            ];
+            radarChartInstance.update();
+        }
+
+        // ==========================================
+        // 6.🎙️ 실시간 음성 상담 (중복 도배 방지 STT 엔진)
+        // ==========================================
+        let speechRecognition = null;
+        let isRecording = false;
+        let committedSegments = [];
+
         function initSpeechRecognition() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                return null;
-            }
-            const recognizer = new SpeechRecognition();
-            recognizer.continuous = true;
-            recognizer.interimResults = true;
-            recognizer.lang = 'ko-KR'; // 한국어 실시간 인식
+            if (!SpeechRecognition) return null;
 
-            return recognizer;
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'ko-KR';
+            recognition.continuous = true;
+            recognition.interimResults = true;
+
+            recognition.onresult = (event) => {
+                let currentInterim = '';
+
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcriptPiece = event.results[i][0].transcript.trim();
+                    if (!transcriptPiece) continue;
+
+                    if (event.results[i].isFinal) {
+                        const lastSaved = committedSegments[committedSegments.length - 1] || '';
+                        // 직전 확정 문장과 동일한 문장이 중복으로 들어오는 현상 완벽 차단
+                        if (transcriptPiece !== lastSaved) {
+                            committedSegments.push(transcriptPiece);
+                        }
+                    } else {
+                        currentInterim = transcriptPiece;
+                    }
+                }
+
+                const textarea = document.getElementById('consultRawInput');
+                const finalJoined = committedSegments.join(' ');
+                textarea.value = currentInterim ? `${finalJoined} ${currentInterim}`.trim() : finalJoined;
+                textarea.scrollTop = textarea.scrollHeight;
+            };
+
+            recognition.onerror = (event) => {
+                console.warn('음성 인식 상태:', event.error);
+                if (event.error === 'not-allowed') {
+                    stopVoiceRecordingUI();
+                    showToast('마이크 권한을 허용해 주세요.');
+                }
+            };
+
+            recognition.onend = () => {
+                if (isRecording) {
+                    try {
+                        recognition.start();
+                    } catch (e) {
+                        stopVoiceRecordingUI();
+                    }
+                }
+            };
+
+            return recognition;
         }
 
         function toggleVoiceRecording() {
-            const btn = document.getElementById('voiceRecordBtn');
-            const label = document.getElementById('voiceRecordLabel');
-            const pill = document.getElementById('recordingStatusPill');
-            const micIcon = document.getElementById('voiceMicIcon');
-            const transcript = document.getElementById('voiceRawTranscript');
+            if (isParentMode) return;
 
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!speechRecognition) {
+                speechRecognition = initSpeechRecognition();
+            }
 
-            // 브라우저가 음성 인식을 지원하지 않는 경우 가이드
-            if (!SpeechRecognition) {
-                triggerToast("현재 브라우저는 실시간 음성인식을 지원하지 않습니다. 텍스트로 직접 입력해주세요.", "error");
+            if (!speechRecognition) {
+                showToast('이 브라우저에서는 실시간 음성 인식을 지원하지 않습니다.');
                 return;
             }
 
             if (!isRecording) {
+                const textarea = document.getElementById('consultRawInput');
+                const existingText = textarea.value.trim();
+                committedSegments = existingText ? [existingText] : [];
+
                 try {
-                    speechRecognition = initSpeechRecognition();
-                    if (!speechRecognition) return;
-
-                    let finalRecordedText = transcript.value ? transcript.value + " " : "";
-
-                    speechRecognition.onstart = function() {
-                        isRecording = true;
-                        btn.classList.add('pulse-subtle', 'ring-4', 'ring-red-500/50');
-                        btn.classList.replace('from-purple-600', 'from-red-600');
-                        micIcon.className = "fa-solid fa-stop text-white animate-pulse";
-                        label.innerText = "말씀하세요... (마이크를 다시 누르면 종료)";
-                        label.classList.add('text-red-400');
-                        pill.className = "text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full font-bold animate-pulse";
-                        pill.innerText = "● 실제 음성 듣는 중";
-                        triggerToast("실제 마이크 음성을 듣고 있습니다. 편하게 말씀해 주세요!");
-                    };
-
-                    speechRecognition.onresult = function(event) {
-                        let interimText = '';
-                        for (let i = event.resultIndex; i < event.results.length; ++i) {
-                            if (event.results[i].isFinal) {
-                                finalRecordedText += event.results[i][0].transcript + " ";
-                            } else {
-                                interimText += event.results[i][0].transcript;
-                            }
-                        }
-                        transcript.value = (finalRecordedText + interimText).trim();
-                        transcript.scrollTop = transcript.scrollHeight;
-                    };
-
-                    speechRecognition.onerror = function(event) {
-                        console.warn("Speech recognition error:", event.error);
-                        if (event.error === 'not-allowed') {
-                            triggerToast("마이크 사용 권한을 허용해 주세요.", "error");
-                        }
-                        stopVoiceRecordingUI();
-                    };
-
-                    speechRecognition.onend = function() {
-                        if (isRecording) {
-                            stopVoiceRecordingUI();
-                        }
-                    };
-
+                    isRecording = true;
                     speechRecognition.start();
-
+                    document.getElementById('micRecordBtn').classList.add('recording-pulse');
+                    document.getElementById('micIcon').className = 'fa-solid fa-stop text-xl';
+                    document.getElementById('recordingStatusBanner').classList.remove('hidden');
                 } catch (err) {
-                    console.error("Speech start error:", err);
-                    triggerToast("마이크 시작 중 오류가 발생했습니다.", "error");
-                    stopVoiceRecordingUI();
+                    console.warn(err);
                 }
-
             } else {
-                // 수동 정지
-                if (speechRecognition) {
-                    try { speechRecognition.stop(); } catch(e){}
-                }
+                isRecording = false;
+                try {
+                    speechRecognition.stop();
+                } catch (err) {}
                 stopVoiceRecordingUI();
-                triggerToast("음성 인식이 완료되었습니다. AI 요약 버튼을 눌러보세요!");
+                showToast('음성 녹음이 완료되었습니다.');
             }
         }
 
         function stopVoiceRecordingUI() {
             isRecording = false;
-            const btn = document.getElementById('voiceRecordBtn');
-            const label = document.getElementById('voiceRecordLabel');
-            const pill = document.getElementById('recordingStatusPill');
-            const micIcon = document.getElementById('voiceMicIcon');
+            document.getElementById('micRecordBtn').classList.remove('recording-pulse');
+            document.getElementById('micIcon').className = 'fa-solid fa-microphone text-xl';
+            document.getElementById('recordingStatusBanner').classList.add('hidden');
+        }
 
-            if (btn) {
-                btn.classList.remove('pulse-subtle', 'ring-4', 'ring-red-500/50');
-                btn.classList.replace('from-red-600', 'from-purple-600');
+        function clearConsultInput() {
+            committedSegments = [];
+            document.getElementById('consultRawInput').value = '';
+        }
+
+        // ==========================================
+        // 7. 🧠 실제 상담 원문 100% 기반 핵심요약 & 조치사항 추출기
+        //    (강점 항목 제거 / 고정된 김지유 문구 완전 제거)
+        // ==========================================
+        function buildAccurateConsultationSummary(rawText) {
+            const cleaned = rawText.replace(/\s+/g, ' ').trim();
+
+            // 문장 단위로 분리
+            const rawSentences = cleaned
+                .split(/(?<=[.?!。])\s+|\n+/)
+                .map(s => s.trim())
+                .filter(s => s.length > 1);
+
+            // 1) 📌 핵심 요약: 실제 입력한 상담 내용을 왜곡 없이 직접 요약/정제
+            let summaryPoints = [];
+            if (rawSentences.length <= 2) {
+                summaryPoints.push(cleaned);
+            } else {
+                // 핵심 키워드가 포함된 실제 문장 우선 추출
+                const importantRegex = /(슛|레이업|자유투|드리블|패스|수비|체력|셔틀런|점프|무릎|발목|부상|통증|컨디션|집중|자세|스텝|학부모|연습|훈련|경기|쿼터|출전|식단|수면|성실|태도|고민|요청|보완|향상|부족|좋아)/;
+                const matched = rawSentences.filter(s => importantRegex.test(s));
+                const picked = (matched.length > 0 ? matched : rawSentences).slice(0, 3);
+                summaryPoints = picked;
             }
-            if (micIcon) micIcon.className = "fa-solid fa-microphone";
-            if (label) {
-                label.innerText = "마이크를 눌러 음성 녹음 시작";
-                label.classList.remove('text-red-400');
+
+            const conciseSummary = summaryPoints
+                .map(s => {
+                    let line = s.replace(/^(음+|어+|그+|네+|예+)\s*/g, '').trim();
+                    if (!/[.?!]$/.test(line)) line += '.';
+                    return line;
+                })
+                .join(' ');
+
+            // 2) 🎯 조치사항: 실제 원문에서 언급된 주제 및 지시문에 맞춘 구체적 조치사항 도출
+            const actions = [];
+
+            // 원문 자체에 구체적 지시/계획 문장이 있으면 최우선 반영
+            const directActionSentences = rawSentences.filter(s =>
+                /(해야|하기로|예정|계획|진행|훈련|연습|집중|보강|체크|조절|휴식|권장|지도|수정|교정)/.test(s)
+            );
+            directActionSentences.slice(0, 2).forEach(s => {
+                const cleanAction = s.replace(/[.?!]+$/, '').trim();
+                actions.push(`상담 내용 반영: ${cleanAction}`);
+            });
+
+            // 상담 원문 내 언급된 키워드별 구체적 현장 훈련/관리 조치사항 매핑
+            if (/(레이업|골밑|왼손|오른손|마무리|스텝)/.test(cleaned)) {
+                actions.push('골밑 좌우 레이업 스텝 교정 및 약손 언더슛 마무리 각 15회×3세트 집중 실시');
             }
-            if (pill) {
-                pill.className = "text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium";
-                pill.innerText = "녹음 완료";
+            if (/(슛|자유투|슛폼|밸런스|석점|3점|캐치앤슛)/.test(cleaned)) {
+                actions.push('하체 릴리즈 밸런스 고정 후 캐치앤슛 30구 및 자유투 루틴 20구 연속 성공 훈련 진행');
             }
+            if (/(드리블|볼핸들링|핸들링|돌파|턴오버|볼 키핑)/.test(cleaned)) {
+                actions.push('낮은 자세 인앤아웃·크로스오버 콘 드리블 왕복 5세트 및 압박 탈출 드리블 훈련 적용');
+            }
+            if (/(체력|셔틀런|지치|지쳐|숨|후반|쿼터|지구력|런닝)/.test(cleaned)) {
+                actions.push('후반 쿼터 체력 유지를 위한 20m 인터벌 셔틀런 15회×2세트 및 호흡 회복 루틴 병행');
+            }
+            if (/(수비|디펜스|스탭|슬라이드|박스아웃|리바운드)/.test(cleaned)) {
+                actions.push('수비 사이드 슬라이드 스텝 훈련 및 골밑 박스아웃 후 리바운드 위치 선정 집중 지도');
+            }
+            if (/(패스|시야|미스|연계|팀플레이|콜플레이)/.test(cleaned)) {
+                actions.push('2대2 픽앤롤 패스 타이밍 훈련 및 이동 중 체스트·바운드 패스 정확도 드릴 진행');
+            }
+            if (/(발목|무릎|부상|통증|아파|아프|스트레칭|피로|휴식|아이싱)/.test(cleaned)) {
+                actions.push('훈련 전후 15분 관절 가동성 스트레칭·아이싱 케어 실시 및 통증 부위 무리한 점프 강도 조절');
+            }
+            if (/(자신감|긴장|멘탈|위축|집중|태도|격려|칭찬)/.test(cleaned)) {
+                actions.push('연습 경기 중 성공 경험 부여를 위한 전담 역할 지정 및 즉각적인 긍정 피드백 제공');
+            }
+            if (/(키|성장|식단|영양|수면|잠|체중)/.test(cleaned)) {
+                actions.push('성장기 회복을 위해 단백질·수분 섭취 가이드 안내 및 밤 10시 이전 취침 루틴 가정 연계');
+            }
+
+            // 키워드가 전혀 매칭되지 않은 일반 대화일 경우 원문 문장 기반으로 직접 조치사항 구성
+            if (actions.length === 0) {
+                actions.push(`상담 내용("${conciseSummary.slice(0, 45)}${conciseSummary.length > 45 ? '...' : ''}")을 바탕으로 다음 훈련 세션에서 1:1 맞춤형 자세 점검 및 피드백 실시`);
+                actions.push('주간 훈련 기록 변화를 측정하여 학부모님께 후속 피드백 공유');
+            }
+
+            // 중복 제거 후 번호 부여
+            const uniqueActions = [...new Set(actions)].slice(0, 3);
+            const formattedActions = uniqueActions.map((act, idx) => `${idx + 1}) ${act}`).join('\n');
+
+            return {
+                summary: conciseSummary,
+                actionPlan: formattedActions
+            };
         }
 
         async function runMobileAiSummary() {
-            const raw = document.getElementById('voiceRawTranscript').value.trim();
-            if (!raw) {
-                triggerToast("먼저 대화 내용을 녹음하거나 입력하세요.", "error");
+            const textarea = document.getElementById('consultRawInput');
+            const rawText = textarea.value.trim();
+
+            if (!rawText) {
+                showToast('먼저 음성으로 말씀하시거나 상담 내용을 입력해 주세요.');
                 return;
             }
 
-            const targetStudent = currentStudentName;
-            triggerToast("상담 내용을 AI가 실시간 분석 중입니다... 🧠");
-
-            // 분석 상태 UI 표시
-            const statusPill = document.getElementById('recordingStatusPill');
-            if (statusPill) {
-                statusPill.className = "text-[10px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full font-bold animate-pulse";
-                statusPill.innerText = "AI 문맥 분석 중...";
+            if (isRecording) {
+                toggleVoiceRecording();
             }
 
+            const btn = document.getElementById('runAiSummaryBtn');
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i><span>상담 원문 정밀 분석 및 요약 중...</span>`;
+            btn.disabled = true;
+
             setTimeout(async () => {
-                // 입력된 실제 대화 텍스트 기반 맞춤형 키워드/문맥 분석
-                const lowerRaw = raw.toLowerCase();
-                let detectedStrengths = [];
-                let detectedActions = [];
+                const { summary, actionPlan } = buildAccurateConsultationSummary(rawText);
 
-                // 1. 역량/종목 키워드 추출
-                if (lowerRaw.includes("슛") || lowerRaw.includes("자유투") || lowerRaw.includes("3점")) {
-                    detectedStrengths.push("릴리즈 포인트 안정 및 원거리 슛 성공률");
-                }
-                if (lowerRaw.includes("달리기") || lowerRaw.includes("셔틀런") || lowerRaw.includes("체력") || lowerRaw.includes("지구력")) {
-                    detectedStrengths.push("4쿼터 종반 스프린트 유지력 및 심폐 지구력");
-                }
-                if (lowerRaw.includes("드리블") || lowerRaw.includes("스피드") || lowerRaw.includes("돌파") || lowerRaw.includes("속공")) {
-                    detectedStrengths.push("낮은 무게중심의 크로스오버 및 1:1 오픈코트 돌파력");
-                }
-                if (lowerRaw.includes("수비") || lowerRaw.includes("리바운드") || lowerRaw.includes("박스아웃")) {
-                    detectedStrengths.push("골밑 박스아웃 자리선점 및 슬라이드 스텝 대인 방어");
-                }
-                if (lowerRaw.includes("패스") || lowerRaw.includes("시야") || lowerRaw.includes("전술")) {
-                    detectedStrengths.push("오픈 찬스를 보는 킥아웃 패스 센스와 팀 플레이 이해도");
-                }
-                if (lowerRaw.includes("자신감") || lowerRaw.includes("멘탈") || lowerRaw.includes("열정") || lowerRaw.includes("성실")) {
-                    detectedStrengths.push("훈련 집중도와 위기 상황에서의 적극적인 마인드셋");
-                }
+                const now = new Date();
+                const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-                // 2. 아주 구체적인 실전 액션 플랜(지도 방안) 도출
-                if (lowerRaw.includes("슛") || lowerRaw.includes("자유투")) {
-                    detectedActions.push("매일 훈련 전 폼 교정 캐치앤슛 50구 및 원핸드 팔로우드로 10분 반복");
-                }
-                if (lowerRaw.includes("체력") || lowerRaw.includes("지구력") || lowerRaw.includes("셔틀런")) {
-                    detectedActions.push("주 3회 20m 인터벌 셔틀런 15회 2세트 실시 및 심박수 회복 시간 체크");
-                }
-                if (lowerRaw.includes("드리블") || lowerRaw.includes("돌파") || lowerRaw.includes("스텝")) {
-                    detectedActions.push("콘 4개 지그재그 체인지 드리블 드릴 5세트 및 스톱점퍼 스텝 훈련");
-                }
-                if (lowerRaw.includes("경기") || lowerRaw.includes("대회") || lowerRaw.includes("출전")) {
-                    detectedActions.push("주말 연습경기 전반 1쿼터(4분) 실전 투입 후 포지션 롤 부여 및 모니터링");
-                }
-                if (lowerRaw.includes("부상") || lowerRaw.includes("아프") || lowerRaw.includes("발목") || lowerRaw.includes("무릎")) {
-                    detectedActions.push("훈련 전 발목 테이핑 실시, 점프 착지 충격 완화 지도 및 강도 30% 감량");
-                }
-                if (lowerRaw.includes("수비") || lowerRaw.includes("리바운드")) {
-                    detectedActions.push("골밑 2:2 리바운드 경합 박스아웃 반복 훈련 및 파울 관리 요령 지도");
-                }
-
-                // 기본값 보정
-                const strengthText = detectedStrengths.length > 0 
-                    ? detectedStrengths.join(" / ") 
-                    : "기본기 수행 능력과 성실한 훈련 태도 유지";
-
-                const actionText = detectedActions.length > 0 
-                    ? detectedActions.join(" | ") 
-                    : "주 2회 개인별 취약 포지션 기초 드릴 15분 추가 배정 및 주간 성장 피드백 공유";
-
-                // 3. 실제 대화 문장 축약 요약 (학생 이름 접두사 없이 대화 본문 핵심만 추출)
-                const sentences = raw.split(/[.?!;\n]+/).map(s => s.trim()).filter(s => s.length > 0);
-                let cleanSummary = "";
-                if (sentences.length <= 2) {
-                    cleanSummary = raw;
-                } else {
-                    cleanSummary = sentences.slice(0, 2).join(". ") + " 등 주요 현황 공유 및 코칭 방향 협의.";
-                }
-
-                const newNote = {
+                const newConsult = {
                     id: Date.now(),
-                    student: targetStudent,
-                    date: new Date().toISOString().slice(0, 10),
-                    summary: cleanSummary,
-                    strength: strengthText,
-                    action: actionText
+                    student_name: currentStudentName,
+                    date: dateStr,
+                    rawText: rawText,
+                    summary: summary,
+                    actionPlan: actionPlan
                 };
 
-                consultHistory.unshift(newNote);
-                renderConsultHistory(targetStudent);
+                if (!consultsByStudent[currentStudentName]) {
+                    consultsByStudent[currentStudentName] = [];
+                }
+                consultsByStudent[currentStudentName].push(newConsult);
+                persistAllData();
 
-                // Insert into Supabase table
                 if (supabaseClient) {
                     try {
                         await supabaseClient.from('consultations').insert([{
-                            student_name: targetStudent,
-                            consult_date: newNote.date,
-                            summary: newNote.summary,
-                            strength: newNote.strength,
-                            action: newNote.action
+                            student_name: currentStudentName,
+                            raw_text: rawText,
+                            summary: summary,
+                            action_plan: actionPlan
                         }]);
-                    } catch (e) {
-                        console.warn("Consultation DB insert fallback:", e);
-                    }
+                    } catch (e) {}
                 }
 
-                triggerToast("실제 상담 내용이 구체적인 액션 플랜과 함께 요약되었습니다! 🎯");
-                document.getElementById('voiceRawTranscript').value = "";
-                if (statusPill) {
-                    statusPill.innerText = "요약 완료";
-                    statusPill.className = "text-[10px] bg-slate-800 text-emerald-400 px-2 py-0.5 rounded-full font-medium";
-                }
-            }, 500);
+                clearConsultInput();
+                renderConsultationHistory();
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+                showToast('상담 핵심 요약 및 조치사항이 저장되었습니다.');
+            }, 400);
         }
 
-        async function handleMobileRecordSubmit(e) {
-            e.preventDefault();
-            let student = document.getElementById('modalStudentName').value;
-            if (student === '__custom_new__') {
-                const customInput = document.getElementById('modalCustomStudentName');
-                student = customInput ? customInput.value.trim() : '';
-                if (!student) {
-                    triggerToast("새 선수의 이름을 입력해주세요.", "error");
-                    return;
-                }
+        function renderConsultationHistory() {
+            const list = consultsByStudent[currentStudentName] || [];
+            document.getElementById('consultCountBadge').textContent = `${list.length}건`;
+            const container = document.getElementById('consultationHistoryList');
 
-                // If not in student list, add automatically
-                if (!students.some(s => s.name === student)) {
-                    const newStudent = {
-                        name: student,
-                        grade: "5학년",
-                        number: "7번",
-                        position: "선수",
-                        score: 85,
-                        quote: `${student} 선수의 멋진 플레이를 기대합니다!`,
-                        photo: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=160&auto=format&fit=crop&q=80"
-                    };
-                    students.push(newStudent);
-                    if (supabaseClient) {
-                        try {
-                            await supabaseClient.from('students').insert([newStudent]);
-                        } catch(err) {
-                            console.warn(err);
-                        }
-                    }
-                }
-                currentStudentName = student;
+            if (list.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 py-6 text-center">저장된 상담 기록이 없습니다.</p>`;
+                return;
             }
 
-            let metric = document.getElementById('modalMetricSelect').value;
-            if (metric === 'custom') {
-                metric = document.getElementById('modalCustomMetricName').value.trim();
-            }
-            const date = document.getElementById('modalRecordDate').value;
-            const score = parseFloat(document.getElementById('modalScoreValue').value);
-            const unit = document.getElementById('modalUnitValue').value.trim();
-            const target = document.getElementById('modalTargetValue').value ? parseFloat(document.getElementById('modalTargetValue').value) : null;
+            container.innerHTML = [...list].reverse().map(item => `
+                <div class="bg-slate-900/95 border border-slate-800 rounded-2xl p-4 space-y-3">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-[11px] font-black text-amber-400">${currentStudentName} 상담노트</span>
+                            <span class="text-[10px] text-slate-500">${item.date}</span>
+                        </div>
+                        ${!isParentMode ? `
+                        <button onclick="deleteConsultItem(${item.id})" class="w-7 h-7 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 flex items-center justify-center transition" title="상담 내역 삭제">
+                            <i class="fa-solid fa-trash-can text-xs"></i>
+                        </button>` : ''}
+                    </div>
 
-            const newRec = {
-                id: Date.now(),
-                student,
-                date,
-                metric,
-                score,
-                unit,
-                target
+                    <!-- 상담 원문 -->
+                    <div class="bg-slate-950/70 rounded-xl p-2.5 border border-slate-800/80">
+                        <span class="text-[10px] font-bold text-slate-400 block mb-0.5">💬 상담 원문</span>
+                        <p class="text-xs text-slate-300 leading-relaxed whitespace-pre-line">${escapeHtml(item.rawText || '')}</p>
+                    </div>
+
+                    <!-- 📌 핵심 요약 (강점 제외) -->
+                    <div class="bg-amber-500/10 border border-amber-500/25 rounded-xl p-3">
+                        <span class="text-[11px] font-extrabold text-amber-400 block mb-1">📌 핵심 요약</span>
+                        <p class="text-xs text-slate-100 leading-relaxed whitespace-pre-line">${escapeHtml(item.summary || '')}</p>
+                    </div>
+
+                    <!-- 🎯 조치사항 -->
+                    <div class="bg-emerald-500/10 border border-emerald-500/25 rounded-xl p-3">
+                        <span class="text-[11px] font-extrabold text-emerald-400 block mb-1">🎯 조치사항</span>
+                        <p class="text-xs text-slate-100 leading-relaxed whitespace-pre-line">${escapeHtml(item.actionPlan || '')}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function deleteConsultItem(consultId) {
+            const list = consultsByStudent[currentStudentName] || [];
+            consultsByStudent[currentStudentName] = list.filter(c => c.id !== consultId);
+            persistAllData();
+            renderConsultationHistory();
+            showToast('상담 내역이 삭제되었습니다.');
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        // ==========================================
+        // 8. 선수 명단 관리 (추가 / 전환 / 삭제 / 프로필 사진)
+        // ==========================================
+        function openPlayerModal() {
+            if (isParentMode) return;
+            renderPlayerModalList();
+            document.getElementById('playerModal').classList.remove('hidden');
+        }
+
+        function closePlayerModal() {
+            document.getElementById('playerModal').classList.add('hidden');
+        }
+
+        function renderPlayerModalList() {
+            const container = document.getElementById('playerModalList');
+            container.innerHTML = students.map(s => {
+                const isSelected = s.name === currentStudentName;
+                const recCount = (recordsByStudent[s.name] || []).length;
+                return `
+                    <div class="flex items-center justify-between p-3 rounded-2xl border ${isSelected ? 'bg-amber-500/15 border-amber-400/50' : 'bg-slate-950/70 border-slate-800'}">
+                        <button onclick="selectStudent('${s.name}')" class="flex items-center space-x-3 flex-1 text-left">
+                            <img src="${s.photo}" class="w-10 h-10 rounded-xl object-cover border border-slate-700" alt="${s.name}">
+                            <div>
+                                <div class="flex items-center space-x-1.5">
+                                    <span class="text-xs font-black text-white">${s.name}</span>
+                                    ${isSelected ? `<span class="text-[10px] font-bold bg-amber-400 text-slate-950 px-1.5 py-0.2 rounded">선택됨</span>` : ''}
+                                </div>
+                                <span class="text-[11px] text-slate-400">${s.position || '강서초 농구부'} · 기록 ${recCount}건</span>
+                            </div>
+                        </button>
+                        <button onclick="promptDeletePlayer('${s.name}')" class="w-8 h-8 rounded-xl bg-rose-500/15 hover:bg-rose-500/30 text-rose-400 flex items-center justify-center ml-2 transition" title="선수 삭제">
+                            <i class="fa-solid fa-trash-can text-xs"></i>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectStudent(name) {
+            currentStudentName = name;
+            closePlayerModal();
+            renderAllUI();
+            showToast(`${name} 선수로 전환되었습니다.`);
+        }
+
+        function registerNewPlayer() {
+            const nameInput = document.getElementById('newPlayerNameInput');
+            const posInput = document.getElementById('newPlayerPosInput');
+            const name = nameInput.value.trim();
+            const pos = posInput.value.trim() || '강서초 농구부';
+
+            if (!name) {
+                showToast('등록할 선수 이름을 입력해 주세요.');
+                return;
+            }
+
+            if (students.some(s => s.name === name)) {
+                showToast('이미 등록된 선수 이름입니다.');
+                return;
+            }
+
+            const newPlayer = {
+                name: name,
+                position: pos,
+                photo: `https://placehold.co/120x120/1e293b/fbbf24?text=${encodeURIComponent(name.slice(0, 2))}`
             };
 
-            records.unshift(newRec);
-            closeModal('recordModal');
-            document.getElementById('recordMobileForm').reset();
-            document.getElementById('customMetricBox').classList.add('hidden');
-            const customStudentBox = document.getElementById('customStudentBox');
-            if (customStudentBox) customStudentBox.classList.add('hidden');
+            students.push(newPlayer);
+            recordsByStudent[name] = [];
+            consultsByStudent[name] = [];
+            currentStudentName = name;
 
-            renderAllViews();
+            nameInput.value = '';
+            posInput.value = '';
 
-            // Insert into Supabase table
-            if (supabaseClient) {
-                try {
-                    await supabaseClient.from('training_records').insert([{
-                        student_name: student,
-                        metric: metric,
-                        score: score,
-                        unit: unit,
-                        target: target,
-                        recorded_date: date
-                    }]);
-                } catch (err) {
-                    console.warn("Supabase record insert fallback:", err);
+            persistAllData();
+            renderPlayerModalList();
+            renderAllUI();
+            showToast(`${name} 선수가 등록되었습니다.`);
+        }
+
+        function promptDeletePlayer(name) {
+            if (students.length <= 1) {
+                showToast('최소 1명의 선수는 남아있어야 합니다.');
+                return;
+            }
+            pendingDeletePlayerName = name;
+            document.getElementById('deleteConfirmDesc').textContent =
+                `'${name}' 선수와 관련된 모든 측정 기록 및 상담 내역이 함께 삭제됩니다.`;
+            document.getElementById('deleteConfirmModal').classList.remove('hidden');
+        }
+
+        function closeDeleteConfirmModal() {
+            pendingDeletePlayerName = null;
+            document.getElementById('deleteConfirmModal').classList.add('hidden');
+        }
+
+        function confirmDeletePlayer() {
+            if (!pendingDeletePlayerName) return;
+            const target = pendingDeletePlayerName;
+
+            students = students.filter(s => s.name !== target);
+            delete recordsByStudent[target];
+            delete consultsByStudent[target];
+
+            if (currentStudentName === target) {
+                currentStudentName = students[0]?.name || '';
+            }
+
+            persistAllData();
+            closeDeleteConfirmModal();
+            renderPlayerModalList();
+            renderAllUI();
+            showToast(`${target} 선수가 명단에서 삭제되었습니다.`);
+        }
+
+        function handleProfilePhotoUpload(event) {
+            const file = event.target.files?.[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const dataUrl = e.target.result;
+                const student = students.find(s => s.name === currentStudentName);
+                if (student) {
+                    student.photo = dataUrl;
+                    persistAllData();
+                    renderAllUI();
+                    showToast('선수 프로필 사진이 업데이트되었습니다.');
                 }
-            }
-
-            triggerToast(`${student} 선수의 [${metric}] 기록이 Supabase에 저장되었습니다!`);
+            };
+            reader.readAsDataURL(file);
         }
 
-        async function deleteRecordItem(id) {
-            const targetRec = records.find(r => r.id === id);
-            records = records.filter(r => r.id !== id);
-            renderAllViews();
-
-            if (supabaseClient && targetRec) {
-                try {
-                    await supabaseClient.from('training_records').delete().eq('id', id);
-                } catch (e) {
-                    console.warn("Supabase record delete fallback:", e);
-                }
-            }
-            triggerToast("기록이 삭제되었습니다.", "error");
-        }
-
-        function refreshAICoachTip() {
-            const tips = [
-                `"${currentStudentName} 선수는 셔틀런 지구력과 슛 감각이 일취월장하고 있어요! 꾸준한 칭찬이 최고의 동기부여가 됩니다. 💡"`,
-                `"${currentStudentName} 선수의 빠른 백코트와 민첩성이 돋보입니다. 경기 중 레이업 마무리 스텝을 집중 코칭해 보세요! 🏀"`,
-                `"지난달 대비 모든 수치가 뚜렷한 상승세입니다! 종합 능력치 밸런스가 매우 이상적입니다. ✨"`
-            ];
-            const rand = tips[Math.floor(Math.random() * tips.length)];
-            document.getElementById('homeAITip').innerText = rand;
-            triggerToast("AI 코치 팁이 갱신되었습니다.");
-        }
-
-        // --- 8. KAKAO SHARING & TOAST ---
-        function executeKakaoSend() {
-            const student = students.find(s => s.name === currentStudentName) || students[0];
-            const studentRecs = records.filter(r => r.student === currentStudentName);
-            const summaryMetrics = studentRecs.slice(0, 3).map(r => `${r.metric}: ${r.score}${r.unit}`).join(" / ") || "자유투, 셔틀런, 서전트 측정 완료";
-
-            // Create individual student report link (prevents seeing other students)
-            const personalizedReportUrl = `${APP_HOST_URL}?student=${encodeURIComponent(student.name)}&mode=parent`;
-
-            if (window.Kakao && window.Kakao.isInitialized()) {
-                try {
-                    window.Kakao.Share.sendDefault({
-                        objectType: 'feed',
-                        content: {
-                            title: `🏀 [강서초 농구부] ${student.name} 선수 훈련 성장 리포트`,
-                            description: `종합 성장 점수: ${student.score}점\n최근 기록: ${summaryMetrics}\n\n* 본 메시지는 ${student.name} 학생 전용 리포트입니다.`,
-                            imageUrl: (student.photo && student.photo.startsWith('http')) ? student.photo : 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400&auto=format&fit=crop&q=80',
-                            link: {
-                                mobileWebUrl: personalizedReportUrl,
-                                webUrl: personalizedReportUrl,
-                            },
-                        },
-                        buttons: [
-                            {
-                                title: `📊 ${student.name} 리포트 열기`,
-                                link: {
-                                    mobileWebUrl: personalizedReportUrl,
-                                    webUrl: personalizedReportUrl,
-                                },
-                            },
-                        ],
-                    });
-                    triggerToast(`[${currentStudentName}] 학부모님 전용 링크를 카카오톡으로 전송했습니다! 🚀`);
-                    return;
-                } catch (err) {
-                    console.warn("Kakao.Share.sendDefault notice:", err);
-                }
-            }
-
-            // Fallback for native Web Share API
-            if (navigator.share) {
-                navigator.share({
-                    title: `[강서초 농구부] ${student.name} 선수 전용 훈련 리포트`,
-                    text: `종합 성장 점수: ${student.score}점\n최신 기록: ${summaryMetrics}`,
-                    url: personalizedReportUrl,
-                }).catch(() => {});
-            } else {
-                triggerToast(`[${currentStudentName}] 학부모님 전용 링크가 준비되었습니다! 🚀`);
-            }
-        }
-
-        function shareKakaoDirect() {
-            switchView('kakao');
-        }
-
-        function triggerToast(msg, type = "success") {
-            const toast = document.getElementById('mobileToast');
-            const msgEl = document.getElementById('toastMsg');
-            const iconEl = document.getElementById('toastIcon');
-
-            msgEl.innerText = msg;
-            if (type === "error") {
-                iconEl.className = "fa-solid fa-circle-exclamation text-red-400 text-sm";
-            } else {
-                iconEl.className = "fa-solid fa-circle-check text-emerald-400 text-sm";
-            }
-
-            toast.classList.remove('opacity-0', '-translate-y-4');
-            toast.classList.add('opacity-100', 'translate-y-0');
-
-            setTimeout(() => {
-                toast.classList.remove('opacity-100', 'translate-y-0');
-                toast.classList.add('opacity-0', '-translate-y-4');
-            }, 2500);
-        }
-
-        // --- 9. NAVIGATION & MODAL CONTROLS ---
-        function updateClock() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const clockEl = document.getElementById('statusBarClock');
-            if (clockEl) clockEl.innerText = `${hours}:${minutes}`;
-        }
-
-        function switchView(viewName) {
-            // Hide all views
-            document.querySelectorAll('.view-content').forEach(view => {
-                view.classList.add('hidden');
-            });
-
-            // Reset navigation tab active states
-            document.querySelectorAll('.nav-tab').forEach(tab => {
-                tab.classList.remove('text-blue-400', 'active', 'font-bold');
-                tab.classList.add('text-slate-400');
-            });
-
-            // Show selected view
-            const targetView = document.getElementById(`view-${viewName}`);
-            if (targetView) targetView.classList.remove('hidden');
-
-            // Set active tab styling
-            const targetTab = document.getElementById(`tab-${viewName}`);
-            if (targetTab) {
-                targetTab.classList.remove('text-slate-400');
-                targetTab.classList.add(viewName === 'kakao' ? 'text-amber-400' : 'text-blue-400', 'active', 'font-bold');
-            }
-
-            // Scroll container back to top
-            const scrollContainer = document.getElementById('appScrollContainer');
-            if (scrollContainer) scrollContainer.scrollTop = 0;
-        }
-
+        // ==========================================
+        // 9. 새 측정 기록 모달 및 저장
+        // ==========================================
         function openRecordModal() {
-            const modal = document.getElementById('recordModal');
-            if (modal) modal.classList.remove('hidden');
-            document.getElementById('modalStudentName').value = currentStudentName;
+            if (isParentMode) return;
+            const select = document.getElementById('modalStudentSelect');
+            select.innerHTML = students.map(s =>
+                `<option value="${s.name}" ${s.name === currentStudentName ? 'selected' : ''}>${s.name} (${s.position || '강서초'})</option>`
+            ).join('') + `<option value="__NEW__">➕ 새 선수 직접 입력...</option>`;
+
+            document.getElementById('modalCustomStudentInput').classList.add('hidden');
+            document.getElementById('modalCustomStudentInput').value = '';
+            document.getElementById('recordDateInput').value = new Date().toISOString().split('T')[0];
+
+            document.getElementById('recordModal').classList.remove('hidden');
         }
 
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) modal.classList.add('hidden');
+        function closeRecordModal() {
+            document.getElementById('recordModal').classList.add('hidden');
         }
 
-        function toggleStudentModal() {
-            const modal = document.getElementById('studentSwitchModal');
-            if (modal) {
-                modal.classList.toggle('hidden');
-            }
-        }
-
-        function toggleCustomMetricField(val) {
-            const box = document.getElementById('customMetricBox');
-            if (!box) return;
-            if (val === 'custom') {
-                box.classList.remove('hidden');
-                document.getElementById('modalCustomMetricName').focus();
+        function handleModalStudentSelectChange() {
+            const select = document.getElementById('modalStudentSelect');
+            const customInput = document.getElementById('modalCustomStudentInput');
+            if (select.value === '__NEW__') {
+                customInput.classList.remove('hidden');
+                customInput.focus();
             } else {
-                box.classList.add('hidden');
+                customInput.classList.add('hidden');
             }
         }
+
+        function saveNewRecord() {
+            const selectVal = document.getElementById('modalStudentSelect').value;
+            let targetName = selectVal;
+
+            if (selectVal === '__NEW__') {
+                targetName = document.getElementById('modalCustomStudentInput').value.trim();
+                if (!targetName) {
+                    showToast('새 선수 이름을 입력해 주세요.');
+                    return;
+                }
+                if (!students.some(s => s.name === targetName)) {
+                    students.push({
+                        name: targetName,
+                        position: '강서초 농구부',
+                        photo: `https://placehold.co/120x120/1e293b/fbbf24?text=${encodeURIComponent(targetName.slice(0, 2))}`
+                    });
+                }
+            }
+
+            const date = document.getElementById('recordDateInput').value || new Date().toISOString().split('T')[0];
+            const shuttle = Number(document.getElementById('recordShuttleInput').value) || 75;
+            const jump = Number(document.getElementById('recordJumpInput').value) || 40;
+            const dribble = Number(document.getElementById('recordDribbleInput').value) || 12.0;
+            const freethrow = Number(document.getElementById('recordFreethrowInput').value) || 80;
+            const layup = Number(document.getElementById('recordLayupInput').value) || 80;
+
+            if (!recordsByStudent[targetName]) {
+                recordsByStudent[targetName] = [];
+            }
+
+            recordsByStudent[targetName].push({
+                id: Date.now(),
+                date,
+                shuttle,
+                jump,
+                dribble,
+                freethrow,
+                layup
+            });
+
+            currentStudentName = targetName;
+            persistAllData();
+            closeRecordModal();
+            renderAllUI();
+            showToast(`${targetName} 선수의 측정 기록이 저장되었습니다.`);
+        }
+
+        // ==========================================
+        // 10. 학부모 개별 카카오톡 리포트 공유
+        // ==========================================
+        function getPersonalizedParentUrl() {
+            return `${APP_DOMAIN}?student=${encodeURIComponent(currentStudentName)}&mode=parent`;
+        }
+
+        function updateSharePreview(totalScore, shootAvg, shuttle) {
+            const url = getPersonalizedParentUrl();
+            document.getElementById('sharePreviewTitle').textContent = `[강서초 농구부] ${currentStudentName} 선수 AI 성장 리포트`;
+            document.getElementById('sharePreviewBody').textContent = `AI 종합지수 ${totalScore}점 | 평균 슛 성공률 ${shootAvg}% | 셔틀런 ${shuttle}회`;
+            document.getElementById('shareUrlPreview').textContent = url;
+        }
+
+        function sendKakaoParentReport() {
+            const personalizedUrl = getPersonalizedParentUrl();
+            const records = recordsByStudent[currentStudentName] || [];
+            const latest = records[records.length - 1] || { shuttle: 75, jump: 40, freethrow: 80, layup: 80 };
+            const totalScore = calculateTotalScore(latest);
+            const shootAvg = Math.round((Number(latest.freethrow) + Number(latest.layup)) / 2);
+
+            if (window.Kakao && window.Kakao.isInitialized() && window.Kakao.Share) {
+                window.Kakao.Share.sendDefault({
+                    objectType: 'feed',
+                    content: {
+                        title: `🏀 [강서초 농구부] ${currentStudentName} 선수 성장 리포트`,
+                        description: `AI 종합지수: ${totalScore}점 | 슛 성공률: ${shootAvg}% | 셔틀런: ${latest.shuttle}회\n(${currentStudentName} 학부모님 전용 열람 링크입니다)`,
+                        imageUrl: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=800&q=80',
+                        link: {
+                            mobileWebUrl: personalizedUrl,
+                            webUrl: personalizedUrl
+                        }
+                    },
+                    buttons: [
+                        {
+                            title: '우리 아이 리포트 확인하기',
+                            link: {
+                                mobileWebUrl: personalizedUrl,
+                                webUrl: personalizedUrl
+                            }
+                        }
+                    ]
+                });
+            } else {
+                copyParentReportLink();
+            }
+        }
+
+        function copyParentReportLink() {
+            const url = getPersonalizedParentUrl();
+            const tempInput = document.createElement('textarea');
+            tempInput.value = url;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast(`${currentStudentName} 학부모님 전용 링크가 복사되었습니다.`);
+        }
+
+        // ==========================================
+        // 11. 하단 탭 전환 및 초기 실행
+        // ==========================================
+        function switchTab(tabName) {
+            if (isParentMode && (tabName === 'consult' || tabName === 'share')) {
+                tabName = 'home';
+            }
+
+            const tabs = ['home', 'records', 'consult', 'share'];
+            tabs.forEach(t => {
+                const sec = document.getElementById(`tab-${t}`);
+                const nav = document.getElementById(`nav-${t}`);
+                if (t === tabName) {
+                    sec.classList.remove('hidden');
+                    nav.classList.remove('text-slate-400');
+                    nav.classList.add('text-amber-400');
+                } else {
+                    sec.classList.add('hidden');
+                    nav.classList.remove('text-amber-400');
+                    nav.classList.add('text-slate-400');
+                }
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            checkParentModeFromUrl();
+            initCharts();
+            renderAllUI();
+        });
     </script>
 </body>
 </html>
