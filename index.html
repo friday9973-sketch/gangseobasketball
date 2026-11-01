@@ -118,14 +118,14 @@
                 <div>
                     <div class="flex items-center gap-1.5">
                         <h1 class="text-sm font-extrabold text-white tracking-tight leading-none">강서초 농구부</h1>
-                        <span class="text-[9px] px-1.5 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold">AI</span>
+                        <span id="appRoleBadge" class="text-[9px] px-1.5 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 font-bold">코치모드</span>
                     </div>
-                    <span class="text-[10px] text-slate-400">모바일 훈련 코칭</span>
+                    <span id="appRoleSubText" class="text-[10px] text-slate-400">모바일 훈련 코칭</span>
                 </div>
             </div>
 
-            <!-- Active Student Switcher Dropdown & Quick Add -->
-            <div class="flex items-center gap-2">
+            <!-- Active Student Switcher Dropdown & Quick Add (Hidden in Parent Mode) -->
+            <div id="coachTopControls" class="flex items-center gap-2">
                 <div class="relative">
                     <button onclick="toggleStudentModal()" class="flex items-center gap-1.5 bg-navy-850 hover:bg-navy-800 border border-slate-700/80 px-2.5 py-1.5 rounded-full text-xs font-semibold text-slate-200 transition-all active:scale-95">
                         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -136,6 +136,12 @@
                 <button onclick="openRecordModal()" class="w-8 h-8 rounded-full bg-blue-600 hover:bg-blue-500 active:scale-95 text-white flex items-center justify-center shadow-lg shadow-blue-500/30 text-xs transition-all">
                     <i class="fa-solid fa-plus"></i>
                 </button>
+            </div>
+            <!-- Parent Mode Child Indicator (Shown only in Parent Mode) -->
+            <div id="parentChildIndicator" class="hidden">
+                <span class="bg-amber-400/20 text-amber-300 border border-amber-400/40 px-2.5 py-1 rounded-full text-xs font-bold">
+                    <i class="fa-solid fa-user-check mr-1"></i><span id="parentChildName">김지유</span> 리포트
+                </span>
             </div>
         </header>
 
@@ -723,12 +729,17 @@
         let radarChart = null;
         let isRecording = false;
         let pendingDeleteStudentName = null;
+        let isParentMode = false;
 
         // --- 2. INITIALIZATION ---
         window.onload = async function() {
             updateClock();
             setInterval(updateClock, 10000);
             document.getElementById('modalRecordDate').valueAsDate = new Date();
+
+            // Check URL query parameters for Parent Mode (e.g. ?student=김지유&mode=parent)
+            checkParentModeFromURL();
+
             renderAllViews();
             initCharts();
 
@@ -737,6 +748,70 @@
                 await fetchSupabaseData();
             }
         };
+
+        function checkParentModeFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const targetStudent = urlParams.get('student');
+            const mode = urlParams.get('mode');
+
+            if (targetStudent) {
+                const decodedName = decodeURIComponent(targetStudent);
+                currentStudentName = decodedName;
+                
+                // If not found in default list, register a temporary profile for display
+                if (!students.some(s => s.name === decodedName)) {
+                    students.push({
+                        name: decodedName,
+                        grade: "5학년",
+                        number: "선수",
+                        position: "선수",
+                        score: 90,
+                        quote: `${decodedName} 선수의 개인 성장 리포트입니다.`,
+                        photo: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=160&auto=format&fit=crop&q=80"
+                    });
+                }
+            }
+
+            if (mode === 'parent' || targetStudent) {
+                isParentMode = true;
+                applyParentViewRestrictions();
+            }
+        }
+
+        function applyParentViewRestrictions() {
+            // Adjust header
+            const roleBadge = document.getElementById('appRoleBadge');
+            const roleSub = document.getElementById('appRoleSubText');
+            const coachControls = document.getElementById('coachTopControls');
+            const parentIndicator = document.getElementById('parentChildIndicator');
+            const parentChildName = document.getElementById('parentChildName');
+
+            if (roleBadge) {
+                roleBadge.innerText = "학부모 전용";
+                roleBadge.className = "text-[9px] px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold";
+            }
+            if (roleSub) roleSub.innerText = "학생별 맞춤 성장 분석";
+            if (coachControls) coachControls.classList.add('hidden');
+            if (parentIndicator) {
+                parentIndicator.classList.remove('hidden');
+                if (parentChildName) parentChildName.innerText = currentStudentName;
+            }
+
+            // Hide tabs not meant for parents (e.g. recording entries, coach consultation history, coach send panel)
+            const tabRecords = document.getElementById('tab-records');
+            const tabConsult = document.getElementById('tab-consult');
+            const tabKakao = document.getElementById('tab-kakao');
+            if (tabRecords) tabRecords.classList.add('hidden');
+            if (tabConsult) tabConsult.classList.add('hidden');
+            if (tabKakao) tabKakao.classList.add('hidden');
+
+            // Hide camera edit badge on photo in parent mode
+            const photoBadge = document.querySelector('button[title="학생 사진 등록/변경"]');
+            if (photoBadge) photoBadge.classList.add('hidden');
+
+            // Set default view to Growth Report for parents
+            switchView('report');
+        }
 
         async function fetchSupabaseData() {
             try {
@@ -1448,30 +1523,33 @@
             const studentRecs = records.filter(r => r.student === currentStudentName);
             const summaryMetrics = studentRecs.slice(0, 3).map(r => `${r.metric}: ${r.score}${r.unit}`).join(" / ") || "자유투, 셔틀런, 서전트 측정 완료";
 
+            // Create individual student report link (prevents seeing other students)
+            const personalizedReportUrl = `${APP_HOST_URL}?student=${encodeURIComponent(student.name)}&mode=parent`;
+
             if (window.Kakao && window.Kakao.isInitialized()) {
                 try {
                     window.Kakao.Share.sendDefault({
                         objectType: 'feed',
                         content: {
                             title: `🏀 [강서초 농구부] ${student.name} 선수 훈련 성장 리포트`,
-                            description: `종합 성장 점수: ${student.score}점\n최근 기록: ${summaryMetrics}`,
-                            imageUrl: student.photo.startsWith('data:') ? 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400&auto=format&fit=crop&q=80' : student.photo,
+                            description: `종합 성장 점수: ${student.score}점\n최근 기록: ${summaryMetrics}\n\n* 본 메시지는 ${student.name} 학생 전용 리포트입니다.`,
+                            imageUrl: (student.photo && student.photo.startsWith('http')) ? student.photo : 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=400&auto=format&fit=crop&q=80',
                             link: {
-                                mobileWebUrl: APP_HOST_URL,
-                                webUrl: APP_HOST_URL,
+                                mobileWebUrl: personalizedReportUrl,
+                                webUrl: personalizedReportUrl,
                             },
                         },
                         buttons: [
                             {
-                                title: '📊 상세 리포트 확인하기',
+                                title: `📊 ${student.name} 리포트 열기`,
                                 link: {
-                                    mobileWebUrl: APP_HOST_URL,
-                                    webUrl: APP_HOST_URL,
+                                    mobileWebUrl: personalizedReportUrl,
+                                    webUrl: personalizedReportUrl,
                                 },
                             },
                         ],
                     });
-                    triggerToast(`[${currentStudentName}] 학부모님께 카카오톡 메시지를 전송했습니다! 🚀`);
+                    triggerToast(`[${currentStudentName}] 학부모님 전용 링크를 카카오톡으로 전송했습니다! 🚀`);
                     return;
                 } catch (err) {
                     console.warn("Kakao.Share.sendDefault notice:", err);
@@ -1481,12 +1559,12 @@
             // Fallback for native Web Share API
             if (navigator.share) {
                 navigator.share({
-                    title: `[강서초 농구부] ${student.name} 선수 훈련 리포트`,
+                    title: `[강서초 농구부] ${student.name} 선수 전용 훈련 리포트`,
                     text: `종합 성장 점수: ${student.score}점\n최신 기록: ${summaryMetrics}`,
-                    url: APP_HOST_URL,
+                    url: personalizedReportUrl,
                 }).catch(() => {});
             } else {
-                triggerToast(`[${currentStudentName}] 학부모님께 카카오톡 알림톡을 발송했습니다! 🚀`);
+                triggerToast(`[${currentStudentName}] 학부모님 전용 링크가 준비되었습니다! 🚀`);
             }
         }
 
