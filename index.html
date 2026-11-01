@@ -525,10 +525,17 @@
 
                 <form id="recordMobileForm" onsubmit="handleMobileRecordSubmit(event)" class="space-y-3">
                     <div>
-                        <label class="block text-[11px] font-semibold text-slate-300 mb-1">선수 이름 (고유번호 없음)</label>
-                        <select id="modalStudentName" class="w-full bg-navy-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="block text-[11px] font-semibold text-slate-300">선수 이름</label>
+                            <span class="text-[10px] text-blue-400 font-medium">선택 또는 직접 입력</span>
+                        </div>
+                        <select id="modalStudentName" onchange="toggleCustomStudentField(this.value)" class="w-full bg-navy-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
                             <!-- Populated dynamically -->
                         </select>
+                        <!-- New Student Direct Input Box (Hidden by default) -->
+                        <div id="customStudentBox" class="hidden mt-2">
+                            <input type="text" id="modalCustomStudentName" placeholder="새로운 선수 이름 입력 (예: 홍길동)" class="w-full bg-navy-950 border border-amber-500/80 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-500">
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-2">
@@ -581,15 +588,53 @@
 
         <!-- MODAL 2: STUDENT SELECTION SHEET -->
         <div id="studentSwitchModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
-            <div class="bg-navy-900 border-t sm:border border-slate-700/80 rounded-t-3xl sm:rounded-3xl w-full max-w-sm p-5 space-y-3 shadow-2xl animate-in slide-in-from-bottom duration-200">
+            <div class="bg-navy-900 border-t sm:border border-slate-700/80 rounded-t-3xl sm:rounded-3xl w-full max-w-sm p-5 space-y-4 shadow-2xl animate-in slide-in-from-bottom duration-200">
                 <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                    <h3 class="text-sm font-bold text-white">관리 선수 변경</h3>
+                    <div>
+                        <h3 class="text-sm font-bold text-white">선수 명단 관리</h3>
+                        <p class="text-[10px] text-slate-400">선수 전환, 신규 등록 및 졸업생 삭제</p>
+                    </div>
                     <button onclick="toggleStudentModal()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center text-xs">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
-                <div id="studentSelectList" class="space-y-2 max-h-60 overflow-y-auto hide-scrollbar">
-                    <!-- Injected dynamically -->
+
+                <!-- Quick Add New Player Box -->
+                <div class="bg-navy-950 p-2.5 rounded-2xl border border-slate-700/80 space-y-2">
+                    <span class="text-[11px] font-semibold text-slate-300 block">➕ 신규 선수 등록</span>
+                    <div class="flex gap-1.5">
+                        <input type="text" id="newStudentInputName" placeholder="선수 이름 입력 (예: 정우진)" class="w-full bg-navy-900 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500">
+                        <button onclick="addNewStudentFromUI()" class="bg-blue-600 hover:bg-blue-500 active:scale-95 text-white px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap shadow-md">
+                            추가
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Student List with Delete Button -->
+                <div class="space-y-1">
+                    <span class="text-[11px] font-semibold text-slate-400 block px-1">등록된 선수 목록 (<span id="studentCountBadge">3</span>명)</span>
+                    <div id="studentSelectList" class="space-y-2 max-h-60 overflow-y-auto hide-scrollbar pt-1">
+                        <!-- Injected dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL 3: CONFIRM DELETE STUDENT PROMPT -->
+        <div id="confirmDeleteModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+            <div class="bg-navy-900 border border-red-500/30 rounded-3xl max-w-xs w-full p-5 text-center space-y-3 shadow-2xl">
+                <div class="w-12 h-12 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center text-xl mx-auto">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <h4 class="text-sm font-bold text-white">선수를 정말 삭제할까요?</h4>
+                <p id="deleteConfirmTargetText" class="text-xs text-slate-300 leading-relaxed">
+                    선수를 삭제하면 측정 기록 및 상담 이력도 함께 제거됩니다.
+                </p>
+                <div class="pt-2 flex gap-2">
+                    <button onclick="closeModal('confirmDeleteModal')" class="w-1/2 bg-slate-800 text-slate-300 py-2 rounded-xl text-xs font-medium">취소</button>
+                    <button id="btnConfirmStudentDelete" onclick="executeDeleteStudentConfirmed()" class="w-1/2 bg-red-600 hover:bg-red-500 text-white py-2 rounded-xl text-xs font-bold shadow-lg shadow-red-500/30">
+                        삭제하기
+                    </button>
                 </div>
             </div>
         </div>
@@ -677,6 +722,7 @@
         let trendChart = null;
         let radarChart = null;
         let isRecording = false;
+        let pendingDeleteStudentName = null;
 
         // --- 2. INITIALIZATION ---
         window.onload = async function() {
@@ -951,7 +997,9 @@
         function renderStudentSelectionOptions() {
             const listContainer = document.getElementById('studentSelectList');
             const modalSelect = document.getElementById('modalStudentName');
+            const countBadge = document.getElementById('studentCountBadge');
 
+            if (countBadge) countBadge.innerText = students.length;
             listContainer.innerHTML = '';
             modalSelect.innerHTML = '';
 
@@ -959,26 +1007,144 @@
                 // In modal select
                 modalSelect.innerHTML += `<option value="${s.name}">${s.name} (${s.grade} ${s.position})</option>`;
 
-                // In switch sheet
-                const btn = document.createElement('button');
-                btn.className = `w-full p-2.5 rounded-xl border flex items-center justify-between text-xs transition-all ${s.name === currentStudentName ? 'bg-blue-600/20 border-blue-500 text-white font-bold' : 'bg-navy-950 border-slate-700 text-slate-300'}`;
-                btn.innerHTML = `
-                    <div class="flex items-center gap-2">
-                        <img src="${s.photo}" class="w-7 h-7 rounded-full object-cover">
-                        <span>${s.name} (${s.grade})</span>
-                    </div>
-                    ${s.name === currentStudentName ? '<i class="fa-solid fa-check text-blue-400"></i>' : ''}
-                `;
-                btn.onclick = () => {
+                // In switch sheet item container
+                const itemWrapper = document.createElement('div');
+                itemWrapper.className = `w-full p-2 rounded-xl border flex items-center justify-between transition-all ${s.name === currentStudentName ? 'bg-blue-600/15 border-blue-500/80' : 'bg-navy-950 border-slate-700/80 hover:bg-navy-900'}`;
+
+                // Left clickable area to select student
+                const selectBtn = document.createElement('div');
+                selectBtn.className = "flex items-center gap-2.5 flex-1 min-w-0 cursor-pointer";
+                selectBtn.onclick = () => {
                     currentStudentName = s.name;
                     toggleStudentModal();
                     renderAllViews();
                     triggerToast(`${s.name} 선수로 전환되었습니다.`);
                 };
-                listContainer.appendChild(btn);
+                selectBtn.innerHTML = `
+                    <img src="${s.photo}" class="w-8 h-8 rounded-full object-cover border border-slate-600">
+                    <div class="text-left min-w-0">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-xs font-bold text-white truncate">${s.name}</span>
+                            ${s.name === currentStudentName ? '<span class="text-[9px] bg-blue-500/20 text-blue-400 px-1.5 py-0.2 rounded font-bold">선택됨</span>' : ''}
+                        </div>
+                        <span class="text-[10px] text-slate-400 block">${s.grade} • ${s.position}</span>
+                    </div>
+                `;
+
+                // Right action area: Delete trash button
+                const deleteBtn = document.createElement('button');
+                deleteBtn.type = "button";
+                deleteBtn.title = "선수 삭제 (졸업/탈퇴)";
+                deleteBtn.className = "w-7 h-7 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 active:scale-90 flex items-center justify-center text-xs transition-colors ml-2";
+                deleteBtn.innerHTML = `<i class="fa-solid fa-trash-can"></i>`;
+                deleteBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    askDeleteStudent(s.name);
+                };
+
+                itemWrapper.appendChild(selectBtn);
+                itemWrapper.appendChild(deleteBtn);
+                listContainer.appendChild(itemWrapper);
             });
 
             modalSelect.value = currentStudentName;
+        }
+
+        // --- 4-C. ADD & DELETE STUDENT HANDLERS ---
+        async function addNewStudentFromUI() {
+            const input = document.getElementById('newStudentInputName');
+            const name = input.value.trim();
+
+            if (!name) {
+                triggerToast("선수 이름을 입력해주세요.", "error");
+                return;
+            }
+
+            if (students.some(s => s.name === name)) {
+                triggerToast("이미 등록된 선수 이름입니다.", "error");
+                return;
+            }
+
+            const newStudentObj = {
+                name: name,
+                grade: "5학년",
+                number: `${Math.floor(Math.random() * 30) + 1}번`,
+                position: "선수",
+                score: 85,
+                quote: "새롭게 팀에 합류하여 열정을 불태우는 기대주!",
+                photo: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=160&auto=format&fit=crop&q=80"
+            };
+
+            students.push(newStudentObj);
+            currentStudentName = name;
+            input.value = "";
+
+            renderAllViews();
+            triggerToast(`[${name}] 선수가 새로 등록되었습니다! 🎉`);
+
+            // Save to Supabase
+            if (supabaseClient) {
+                try {
+                    await supabaseClient.from('students').insert([{
+                        name: newStudentObj.name,
+                        grade: newStudentObj.grade,
+                        number: newStudentObj.number,
+                        position: newStudentObj.position,
+                        score: newStudentObj.score,
+                        quote: newStudentObj.quote,
+                        photo_url: newStudentObj.photo
+                    }]);
+                } catch (e) {
+                    console.warn("Supabase insert student fallback:", e);
+                }
+            }
+        }
+
+        function askDeleteStudent(studentName) {
+            if (students.length <= 1) {
+                triggerToast("최소 1명의 선수는 등록되어 있어야 합니다.", "error");
+                return;
+            }
+
+            pendingDeleteStudentName = studentName;
+            const targetText = document.getElementById('deleteConfirmTargetText');
+            if (targetText) {
+                targetText.innerHTML = `<b class="text-white font-bold">[${studentName}]</b> 선수를 삭제하시겠습니까?<br><span class="text-[11px] text-slate-400">관련된 측정 데이터도 함께 삭제됩니다.</span>`;
+            }
+            const modal = document.getElementById('confirmDeleteModal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        async function executeDeleteStudentConfirmed() {
+            if (!pendingDeleteStudentName) return;
+            const deletedName = pendingDeleteStudentName;
+
+            // Remove from local memory
+            students = students.filter(s => s.name !== deletedName);
+            records = records.filter(r => r.student !== deletedName);
+            consultHistory = consultHistory.filter(c => c.student !== deletedName);
+
+            // If active player was deleted, switch to first remaining
+            if (currentStudentName === deletedName) {
+                currentStudentName = students[0].name;
+            }
+
+            closeModal('confirmDeleteModal');
+            renderAllViews();
+            triggerToast(`[${deletedName}] 선수가 명단에서 삭제되었습니다.`, "error");
+
+            // Delete from Supabase
+            if (supabaseClient) {
+                try {
+                    await supabaseClient.from('students').delete().eq('name', deletedName);
+                    await supabaseClient.from('training_records').delete().eq('student_name', deletedName);
+                    await supabaseClient.from('consultations').delete().eq('student_name', deletedName);
+                } catch (e) {
+                    console.warn("Supabase student delete fallback:", e);
+                }
+            }
+
+            pendingDeleteStudentName = null;
         }
 
         // --- 5. CHARTS (Optimized for Mobile Screens) ---
@@ -1171,7 +1337,38 @@
 
         async function handleMobileRecordSubmit(e) {
             e.preventDefault();
-            const student = document.getElementById('modalStudentName').value;
+            let student = document.getElementById('modalStudentName').value;
+            if (student === '__custom_new__') {
+                const customInput = document.getElementById('modalCustomStudentName');
+                student = customInput ? customInput.value.trim() : '';
+                if (!student) {
+                    triggerToast("새 선수의 이름을 입력해주세요.", "error");
+                    return;
+                }
+
+                // If not in student list, add automatically
+                if (!students.some(s => s.name === student)) {
+                    const newStudent = {
+                        name: student,
+                        grade: "5학년",
+                        number: "7번",
+                        position: "선수",
+                        score: 85,
+                        quote: `${student} 선수의 멋진 플레이를 기대합니다!`,
+                        photo: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=160&auto=format&fit=crop&q=80"
+                    };
+                    students.push(newStudent);
+                    if (supabaseClient) {
+                        try {
+                            await supabaseClient.from('students').insert([newStudent]);
+                        } catch(err) {
+                            console.warn(err);
+                        }
+                    }
+                }
+                currentStudentName = student;
+            }
+
             let metric = document.getElementById('modalMetricSelect').value;
             if (metric === 'custom') {
                 metric = document.getElementById('modalCustomMetricName').value.trim();
@@ -1195,6 +1392,8 @@
             closeModal('recordModal');
             document.getElementById('recordMobileForm').reset();
             document.getElementById('customMetricBox').classList.add('hidden');
+            const customStudentBox = document.getElementById('customStudentBox');
+            if (customStudentBox) customStudentBox.classList.add('hidden');
 
             renderAllViews();
 
