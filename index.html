@@ -42,7 +42,7 @@
 </head>
 <body class="min-h-screen flex justify-center bg-[#050811]">
 
-  <!-- 🔒 코치 전용 비밀번호 잠금 모달 (음성 상담 아이콘 클릭 시에만 활성화) -->
+  <!-- 🔒 코치 전용 비밀번호 잠금 모달 (비밀번호: 5555 고정, 안내 문구 삭제) -->
   <div id="pinLockScreen">
     <div class="w-full max-w-xs glass-card rounded-2xl p-6 text-center space-y-4 shadow-2xl border border-orange-500/30">
       <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 mx-auto flex items-center justify-center text-slate-950 font-black text-lg">🔒</div>
@@ -54,7 +54,7 @@
       <button onclick="verifyCoachPin()" class="w-full py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs shadow-lg shadow-orange-500/20 transition">
         잠금 해제하기
       </button>
-     <div class="flex items-center justify-end pt-2">
+      <div class="flex items-center justify-end pt-2">
         <button onclick="closePinLockModal()" class="text-[11px] text-slate-400 hover:text-white font-bold">✕ 닫기</button>
       </div>
     </div>
@@ -94,7 +94,7 @@
     <!-- 메인 컨텐츠 영역 -->
     <main class="flex-1 px-4 pt-4 space-y-4">
 
-      <!-- [탭 1] 홈 대시보드 (깔끔하게 다이어트 완료) -->
+      <!-- [탭 1] 홈 대시보드 (선수 프로필, 3대 지표, 성장 TOP 3 & MVP 카드 포함) -->
       <section id="tab-home" class="space-y-4">
         <!-- 선수 프로필 & 종합 점수 카드 -->
         <div class="glass-card rounded-2xl p-4 relative overflow-hidden">
@@ -151,6 +151,19 @@
           </p>
         </div>
 
+        <!-- 🔥 이번 주 성장 랭킹 & MVP 카드 -->
+        <div class="glass-card rounded-2xl p-4 space-y-3 border border-orange-500/30">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold text-white flex items-center gap-1.5">
+              <span>🔥</span> 이번 주 성장 랭킹 & MVP
+            </h3>
+            <span class="text-[10px] text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded-full font-bold">실시간 자동 집계</span>
+          </div>
+          <div id="growthRankContainer" class="space-y-2">
+            <!-- 자바스크립트로 동적 렌더링 -->
+          </div>
+        </div>
+
         <!-- 성장 추이 차트 -->
         <div class="glass-card rounded-2xl p-4">
           <div class="flex items-center justify-between mb-3">
@@ -183,7 +196,7 @@
         </div>
       </section>
 
-      <!-- [탭 3] AI 음성 상담 & 코칭 노트 (비밀번호 인증 후 진입) -->
+      <!-- [탭 3] AI 음성 상담 & 코칭 노트 (비밀번호 5555 인증 후 진입) -->
       <section id="tab-voice" class="hidden space-y-4">
         <div class="glass-card rounded-2xl p-4">
           <div class="flex items-center justify-between mb-2">
@@ -270,7 +283,7 @@
 
     </main>
 
-    <!-- 하단 네비게이션 바 (음성 상담 아이콘 클릭 시에만 비밀번호 잠금 실행) -->
+    <!-- 하단 네비게이션 바 (음성 상담 아이콘 클릭 시 비밀번호 5555 잠금) -->
     <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-[#0b0f19]/95 backdrop-blur-lg border-t border-slate-800/80 px-2 py-2 flex justify-around items-center z-30">
       <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center gap-1 py-1 px-3 rounded-xl active-nav">
         <span class="text-lg">🏠</span>
@@ -291,7 +304,7 @@
     </nav>
   </div>
 
-  <!-- [모달 1] 선수 명단 관리 (세로 정렬 배치 및 포지션 수정 지원) -->
+  <!-- [모달 1] 선수 명단 관리 (세로 상하 배치 및 포지션 수정 지원) -->
   <div id="studentModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="w-full max-w-sm bg-slate-900 border border-slate-700 rounded-2xl p-4 space-y-4 shadow-2xl">
       <div class="flex items-center justify-between">
@@ -356,11 +369,9 @@
   <div id="toastBox" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 hidden bg-slate-900/95 border border-orange-500/60 text-white px-4 py-2.5 rounded-full text-xs font-bold shadow-xl"></div>
 
   <script>
-   // ==========================================
-    // 🔒 코치 비밀번호 잠금 로직 (기본 비번: 5555 고정)
     // ==========================================
-    const COACH_PIN_KEY = 'gangseo_coach_pin_v5555';
-
+    // 🔒 코치 비밀번호 잠금 로직 (비번: 5555 고정)
+    // ==========================================
     function requestVoiceConsultationLock() {
       if (isParentMode) {
         showToast('학부모 전용 모드에서는 이용할 수 없습니다.');
@@ -376,7 +387,6 @@
 
     function verifyCoachPin() {
       const inputVal = document.getElementById('coachPinInput').value.trim();
-      // 비밀번호를 5555로 고정
       const savedPin = '5555';
 
       if (inputVal === savedPin) {
@@ -388,6 +398,7 @@
         document.getElementById('coachPinInput').value = '';
       }
     }
+
     // ==========================================
     // 1. 외부 연동 설정 (Kakao SDK & 배포 도메인)
     // ==========================================
@@ -405,7 +416,7 @@
     // ==========================================
     // 2. 상태 데이터 관리 (LocalStorage + 초기 샘플)
     // ==========================================
-    const STORAGE_KEY = 'gangseo_bball_state_v8';
+    const STORAGE_KEY = 'gangseo_bball_state_v9';
 
     const defaultState = {
       currentStudent: '김지유',
@@ -510,7 +521,7 @@
     }
 
     // ==========================================
-    // 4. UI 렌더링 & 차트 업데이트
+    // 4. UI 렌더링 & 성장 TOP 3 랭킹 계산
     // ==========================================
     function renderAll() {
       const name = appState.currentStudent;
@@ -536,8 +547,61 @@
 
       renderRecordHistory(student);
       renderConsultations(student);
+      renderGrowthRanking();
       updateCharts(student);
       updateSharePreview();
+    }
+
+    function renderGrowthRanking() {
+      const container = document.getElementById('growthRankContainer');
+      if (!container) return;
+
+      const students = appState.students;
+      let rankingList = [];
+
+      Object.keys(students).forEach(name => {
+        const recs = students[name].records || [];
+        if (recs.length > 0) {
+          const latest = recs[recs.length - 1];
+          const totalScore = Math.round(latest.shoot * 0.5 + latest.shuttle * 0.4);
+          
+          rankingList.push({
+            name: name,
+            role: students[name].role || '선수',
+            latestShoot: latest.shoot,
+            latestShuttle: latest.shuttle,
+            score: totalScore
+          });
+        }
+      });
+
+      rankingList.sort((a, b) => b.score - a.score);
+
+      if (rankingList.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-400 text-center py-2">등록된 측정 기록이 없습니다.</p>`;
+        return;
+      }
+
+      container.innerHTML = rankingList.slice(0, 3).map((item, index) => {
+        const medals = ['👑 오늘의 MVP', '🥈 쑥쑥 성장상', '🥉 노력상'];
+        const colors = ['text-yellow-400 bg-yellow-500/10 border-yellow-500/30', 'text-slate-300 bg-slate-800 border-slate-700', 'text-amber-600 bg-amber-500/10 border-amber-500/30'];
+        
+        return `
+          <div class="flex items-center justify-between p-2.5 rounded-xl border ${colors[index] || 'bg-slate-900 border-slate-800'}">
+            <div class="flex items-center gap-2.5">
+              <span class="text-xs font-black">${medals[index] || `${index+1}위`}</span>
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-xs font-extrabold text-white">${item.name}</span>
+                  <span class="text-[10px] text-slate-400">(${item.role})</span>
+                </div>
+                <p class="text-[10px] text-slate-300 mt-0.5">자유투 ${item.latestShoot}% · 셔틀런 ${item.latestShuttle}회</p>
+              </div>
+            </div>
+            <span class="text-xs font-extrabold text-orange-400 bg-orange-500/20 px-2 py-1 rounded-lg">성장점수 ${item.score}점</span>
+          </div>
+        `;
+      }).join('');
     }
 
     function renderRecordHistory(student) {
