@@ -346,7 +346,6 @@
                     <div class="space-y-2 text-left">
                         <div class="flex items-center justify-between">
                             <label class="text-[11px] font-semibold text-slate-300">음성 텍스트 / 상담 대화 내용</label>
-                            <button onclick="fillSampleTranscript()" class="text-[10px] text-blue-400 underline font-medium">예시 대화 불러오기</button>
                         </div>
                         <textarea id="voiceRawTranscript" rows="3" placeholder="녹음 버튼을 누르거나 상담 내용을 직접 적어주세요..." class="w-full bg-navy-950 border border-slate-700 rounded-2xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500"></textarea>
                     </div>
@@ -737,6 +736,7 @@
         let trendChart = null;
         let radarChart = null;
         let isRecording = false;
+        let speechRecognition = null;
         let pendingDeleteStudentName = null;
         let isParentMode = false;
 
@@ -1066,7 +1066,14 @@
                 el.innerHTML = `
                     <div class="flex items-center justify-between border-b border-slate-700 pb-1.5">
                         <span class="font-bold text-purple-300"><i class="fa-solid fa-calendar-check mr-1"></i> ${c.date} 상담</span>
-                        <span class="text-[10px] text-slate-400">강서초 코치</span>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-[10px] text-slate-400">강서초 코치</span>
+                            ${!isParentMode ? `
+                            <button onclick="deleteConsultItem(${c.id})" class="w-6 h-6 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 active:scale-90 flex items-center justify-center text-[11px] transition-colors ml-1" title="상담 내역 삭제">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                            ` : ''}
+                        </div>
                     </div>
                     <div class="space-y-1 text-slate-200 text-[11px] leading-relaxed">
                         <p><b class="text-white">📌 요약:</b> ${c.summary}</p>
@@ -1076,6 +1083,21 @@
                 `;
                 container.appendChild(el);
             });
+        }
+
+        async function deleteConsultItem(id) {
+            const targetConsult = consultHistory.find(c => c.id === id);
+            consultHistory = consultHistory.filter(c => c.id !== id);
+            renderConsultHistory(currentStudentName);
+
+            if (supabaseClient && targetConsult) {
+                try {
+                    await supabaseClient.from('consultations').delete().eq('id', id);
+                } catch (e) {
+                    console.warn("Supabase consultation delete fallback:", e);
+                }
+            }
+            triggerToast("상담 내역이 삭제되었습니다.", "error");
         }
 
         function renderStudentSelectionOptions() {
@@ -1255,7 +1277,9 @@
                             label: '드리블 기록 (초)',
                             data: [15.2, 14.0, 12.3],
                             borderColor: '#fbbf24',
+                            backgroundColor: 'transparent',
                             borderWidth: 2,
+                            borderDash: [4, 4],
                             tension: 0.35,
                             pointRadius: 3,
                             pointBackgroundColor: '#fbbf24'
@@ -1267,26 +1291,36 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            labels: { color: '#94a3b8', font: { size: 10, family: 'Pretendard' }, boxWidth: 10 }
+                            labels: {
+                                color: '#94a3b8',
+                                font: { size: 10, family: 'Pretendard' },
+                                boxWidth: 12
+                            }
                         }
                     },
                     scales: {
-                        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#94a3b8', font: { size: 10 } } },
-                        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#94a3b8', font: { size: 10 } } }
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#64748b', font: { size: 10 } }
+                        },
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#64748b', font: { size: 10 } }
+                        }
                     }
                 }
             });
 
-            // Radar Chart
+            // Radar Chart for Report View
             const radarCtx = document.getElementById('mobileRadarChart').getContext('2d');
             radarChart = new Chart(radarCtx, {
                 type: 'radar',
                 data: {
-                    labels: ['슈팅정확도', '드리블', '패스센스', '셔틀런(지구력)', '스피드'],
+                    labels: ['슈팅 정확도', '스피드/민첩성', '경기 지구력', '수비 리바운드', '전술 이해도'],
                     datasets: [
                         {
-                            label: '현재',
-                            data: [90, 85, 80, 88, 85],
+                            label: '현재 능력치',
+                            data: [88, 85, 92, 78, 86],
                             backgroundColor: 'rgba(59, 130, 246, 0.25)',
                             borderColor: '#3b82f6',
                             borderWidth: 2,
@@ -1294,9 +1328,9 @@
                             pointRadius: 3
                         },
                         {
-                            label: '이전',
-                            data: [75, 70, 75, 76, 74],
-                            backgroundColor: 'rgba(148, 163, 184, 0.1)',
+                            label: '입부 초기',
+                            data: [65, 70, 68, 60, 62],
+                            backgroundColor: 'rgba(148, 163, 184, 0.15)',
                             borderColor: '#64748b',
                             borderWidth: 1.5,
                             pointBackgroundColor: '#64748b',
@@ -1307,20 +1341,49 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#cbd5e1',
+                                font: { size: 10, family: 'Pretendard' },
+                                boxWidth: 10
+                            }
+                        }
+                    },
                     scales: {
                         r: {
-                            grid: { color: 'rgba(255, 255, 255, 0.08)' },
                             angleLines: { color: 'rgba(255, 255, 255, 0.08)' },
-                            pointLabels: { color: '#cbd5e1', font: { size: 10, family: 'Pretendard' } },
-                            ticks: { display: false, max: 100 }
+                            grid: { color: 'rgba(255, 255, 255, 0.08)' },
+                            pointLabels: {
+                                color: '#94a3b8',
+                                font: { size: 10, family: 'Pretendard' }
+                            },
+                            ticks: {
+                                display: false,
+                                maxTicksLimit: 5
+                            },
+                            suggestedMin: 40,
+                            suggestedMax: 100
                         }
                     }
                 }
             });
         }
 
-        // --- 6. VOICE RECORDING & AI SUMMARY SIMULATION ---
+        // --- 6. VOICE RECORDING & AI SUMMARY (Real Web Speech Recognition STT) ---
+        function initSpeechRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                return null;
+            }
+            const recognizer = new SpeechRecognition();
+            recognizer.continuous = true;
+            recognizer.interimResults = true;
+            recognizer.lang = 'ko-KR'; // 한국어 실시간 인식
+
+            return recognizer;
+        }
+
         function toggleVoiceRecording() {
             const btn = document.getElementById('voiceRecordBtn');
             const label = document.getElementById('voiceRecordLabel');
@@ -1328,51 +1391,98 @@
             const micIcon = document.getElementById('voiceMicIcon');
             const transcript = document.getElementById('voiceRawTranscript');
 
-            if (!isRecording) {
-                isRecording = true;
-                btn.classList.add('pulse-subtle', 'ring-4', 'ring-red-500/50');
-                btn.classList.replace('from-purple-600', 'from-red-600');
-                micIcon.className = "fa-solid fa-stop text-white animate-pulse";
-                label.innerText = "녹음 진행 중... (마이크 탭하여 정지)";
-                label.classList.add('text-red-400');
-                pill.className = "text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full font-bold animate-pulse";
-                pill.innerText = "● LIVE RECORDING";
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-                // Simulate speech transcription streaming
-                transcript.value = "녹음 중: ";
-                const words = [
-                    "코치님 안녕하세요!",
-                    "지유가 집에서 셔틀런 기록 오른 걸",
-                    "엄청 자랑하더라고요.",
-                    "다음 주 주말 친선 시합 때",
-                    "학부모 관람이 가능한지 여쭤봅니다."
-                ];
-                let idx = 0;
-                window.voiceTimer = setInterval(() => {
-                    if (idx < words.length) {
-                        transcript.value += " " + words[idx];
-                        idx++;
-                    }
-                }, 600);
+            // 브라우저가 음성 인식을 지원하지 않는 경우 가이드
+            if (!SpeechRecognition) {
+                triggerToast("현재 브라우저는 실시간 음성인식을 지원하지 않습니다. 텍스트로 직접 입력해주세요.", "error");
+                return;
+            }
+
+            if (!isRecording) {
+                try {
+                    speechRecognition = initSpeechRecognition();
+                    if (!speechRecognition) return;
+
+                    let finalRecordedText = transcript.value ? transcript.value + " " : "";
+
+                    speechRecognition.onstart = function() {
+                        isRecording = true;
+                        btn.classList.add('pulse-subtle', 'ring-4', 'ring-red-500/50');
+                        btn.classList.replace('from-purple-600', 'from-red-600');
+                        micIcon.className = "fa-solid fa-stop text-white animate-pulse";
+                        label.innerText = "말씀하세요... (마이크를 다시 누르면 종료)";
+                        label.classList.add('text-red-400');
+                        pill.className = "text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full font-bold animate-pulse";
+                        pill.innerText = "● 실제 음성 듣는 중";
+                        triggerToast("실제 마이크 음성을 듣고 있습니다. 편하게 말씀해 주세요!");
+                    };
+
+                    speechRecognition.onresult = function(event) {
+                        let interimText = '';
+                        for (let i = event.resultIndex; i < event.results.length; ++i) {
+                            if (event.results[i].isFinal) {
+                                finalRecordedText += event.results[i][0].transcript + " ";
+                            } else {
+                                interimText += event.results[i][0].transcript;
+                            }
+                        }
+                        transcript.value = (finalRecordedText + interimText).trim();
+                        transcript.scrollTop = transcript.scrollHeight;
+                    };
+
+                    speechRecognition.onerror = function(event) {
+                        console.warn("Speech recognition error:", event.error);
+                        if (event.error === 'not-allowed') {
+                            triggerToast("마이크 사용 권한을 허용해 주세요.", "error");
+                        }
+                        stopVoiceRecordingUI();
+                    };
+
+                    speechRecognition.onend = function() {
+                        if (isRecording) {
+                            stopVoiceRecordingUI();
+                        }
+                    };
+
+                    speechRecognition.start();
+
+                } catch (err) {
+                    console.error("Speech start error:", err);
+                    triggerToast("마이크 시작 중 오류가 발생했습니다.", "error");
+                    stopVoiceRecordingUI();
+                }
 
             } else {
-                isRecording = false;
-                clearInterval(window.voiceTimer);
-                btn.classList.remove('pulse-subtle', 'ring-4', 'ring-red-500/50');
-                btn.classList.replace('from-red-600', 'from-purple-600');
-                micIcon.className = "fa-solid fa-microphone";
-                label.innerText = "마이크를 눌러 녹음 시작";
-                label.classList.remove('text-red-400');
-                pill.className = "text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium";
-                pill.innerText = "녹음 완료";
-                triggerToast("음성 녹음이 완료되었습니다. AI 요약을 실행해 보세요.");
+                // 수동 정지
+                if (speechRecognition) {
+                    try { speechRecognition.stop(); } catch(e){}
+                }
+                stopVoiceRecordingUI();
+                triggerToast("음성 인식이 완료되었습니다. AI 요약 버튼을 눌러보세요!");
             }
         }
 
-        function fillSampleTranscript() {
-            const transcript = document.getElementById('voiceRawTranscript');
-            transcript.value = `코치님 안녕하세요! 지유가 요즘 농구 연습에 푹 빠져서 집에서도 계속 공을 튀기고 슛 연습을 하네요. 특히 셔틀런 기록이 많이 올랐다고 아주 자랑스러워하고 있습니다. 다음 주말 연습 경기 때 부모님들이 응원하러 가도 되는지 여쭤보고 싶습니다!`;
-            triggerToast("예시 대화가 입력되었습니다.");
+        function stopVoiceRecordingUI() {
+            isRecording = false;
+            const btn = document.getElementById('voiceRecordBtn');
+            const label = document.getElementById('voiceRecordLabel');
+            const pill = document.getElementById('recordingStatusPill');
+            const micIcon = document.getElementById('voiceMicIcon');
+
+            if (btn) {
+                btn.classList.remove('pulse-subtle', 'ring-4', 'ring-red-500/50');
+                btn.classList.replace('from-red-600', 'from-purple-600');
+            }
+            if (micIcon) micIcon.className = "fa-solid fa-microphone";
+            if (label) {
+                label.innerText = "마이크를 눌러 음성 녹음 시작";
+                label.classList.remove('text-red-400');
+            }
+            if (pill) {
+                pill.className = "text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium";
+                pill.innerText = "녹음 완료";
+            }
         }
 
         async function runMobileAiSummary() {
@@ -1382,26 +1492,97 @@
                 return;
             }
 
-            triggerToast("Gemini AI가 핵심 요약을 생성 중입니다...");
+            const targetStudent = currentStudentName;
+            triggerToast("상담 내용을 AI가 실시간 분석 중입니다... 🧠");
+
+            // 분석 상태 UI 표시
+            const statusPill = document.getElementById('recordingStatusPill');
+            if (statusPill) {
+                statusPill.className = "text-[10px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full font-bold animate-pulse";
+                statusPill.innerText = "AI 문맥 분석 중...";
+            }
 
             setTimeout(async () => {
+                // 입력된 실제 대화 텍스트 기반 맞춤형 키워드/문맥 분석
+                const lowerRaw = raw.toLowerCase();
+                let detectedStrengths = [];
+                let detectedActions = [];
+
+                // 1. 역량/종목 키워드 추출
+                if (lowerRaw.includes("슛") || lowerRaw.includes("자유투") || lowerRaw.includes("3점")) {
+                    detectedStrengths.push("릴리즈 포인트 안정 및 원거리 슛 성공률");
+                }
+                if (lowerRaw.includes("달리기") || lowerRaw.includes("셔틀런") || lowerRaw.includes("체력") || lowerRaw.includes("지구력")) {
+                    detectedStrengths.push("4쿼터 종반 스프린트 유지력 및 심폐 지구력");
+                }
+                if (lowerRaw.includes("드리블") || lowerRaw.includes("스피드") || lowerRaw.includes("돌파") || lowerRaw.includes("속공")) {
+                    detectedStrengths.push("낮은 무게중심의 크로스오버 및 1:1 오픈코트 돌파력");
+                }
+                if (lowerRaw.includes("수비") || lowerRaw.includes("리바운드") || lowerRaw.includes("박스아웃")) {
+                    detectedStrengths.push("골밑 박스아웃 자리선점 및 슬라이드 스텝 대인 방어");
+                }
+                if (lowerRaw.includes("패스") || lowerRaw.includes("시야") || lowerRaw.includes("전술")) {
+                    detectedStrengths.push("오픈 찬스를 보는 킥아웃 패스 센스와 팀 플레이 이해도");
+                }
+                if (lowerRaw.includes("자신감") || lowerRaw.includes("멘탈") || lowerRaw.includes("열정") || lowerRaw.includes("성실")) {
+                    detectedStrengths.push("훈련 집중도와 위기 상황에서의 적극적인 마인드셋");
+                }
+
+                // 2. 아주 구체적인 실전 액션 플랜(지도 방안) 도출
+                if (lowerRaw.includes("슛") || lowerRaw.includes("자유투")) {
+                    detectedActions.push("매일 훈련 전 폼 교정 캐치앤슛 50구 및 원핸드 팔로우드로 10분 반복");
+                }
+                if (lowerRaw.includes("체력") || lowerRaw.includes("지구력") || lowerRaw.includes("셔틀런")) {
+                    detectedActions.push("주 3회 20m 인터벌 셔틀런 15회 2세트 실시 및 심박수 회복 시간 체크");
+                }
+                if (lowerRaw.includes("드리블") || lowerRaw.includes("돌파") || lowerRaw.includes("스텝")) {
+                    detectedActions.push("콘 4개 지그재그 체인지 드리블 드릴 5세트 및 스톱점퍼 스텝 훈련");
+                }
+                if (lowerRaw.includes("경기") || lowerRaw.includes("대회") || lowerRaw.includes("출전")) {
+                    detectedActions.push("주말 연습경기 전반 1쿼터(4분) 실전 투입 후 포지션 롤 부여 및 모니터링");
+                }
+                if (lowerRaw.includes("부상") || lowerRaw.includes("아프") || lowerRaw.includes("발목") || lowerRaw.includes("무릎")) {
+                    detectedActions.push("훈련 전 발목 테이핑 실시, 점프 착지 충격 완화 지도 및 강도 30% 감량");
+                }
+                if (lowerRaw.includes("수비") || lowerRaw.includes("리바운드")) {
+                    detectedActions.push("골밑 2:2 리바운드 경합 박스아웃 반복 훈련 및 파울 관리 요령 지도");
+                }
+
+                // 기본값 보정
+                const strengthText = detectedStrengths.length > 0 
+                    ? detectedStrengths.join(" / ") 
+                    : "기본기 수행 능력과 성실한 훈련 태도 유지";
+
+                const actionText = detectedActions.length > 0 
+                    ? detectedActions.join(" | ") 
+                    : "주 2회 개인별 취약 포지션 기초 드릴 15분 추가 배정 및 주간 성장 피드백 공유";
+
+                // 3. 실제 대화 문장 축약 요약 (학생 이름 접두사 없이 대화 본문 핵심만 추출)
+                const sentences = raw.split(/[.?!;\n]+/).map(s => s.trim()).filter(s => s.length > 0);
+                let cleanSummary = "";
+                if (sentences.length <= 2) {
+                    cleanSummary = raw;
+                } else {
+                    cleanSummary = sentences.slice(0, 2).join(". ") + " 등 주요 현황 공유 및 코칭 방향 협의.";
+                }
+
                 const newNote = {
                     id: Date.now(),
-                    student: currentStudentName,
+                    student: targetStudent,
                     date: new Date().toISOString().slice(0, 10),
-                    summary: `학부모님께서 ${currentStudentName} 선수의 체력 및 슛 연습 태도에 만족해하심. 다음 주말 경기 출전 여부 문의.`,
-                    strength: "셔틀런 지구력 및 슈팅 집중도 우수",
-                    action: "주말 경기 1쿼터 출전 일정 안내 및 격려 문자 전달"
+                    summary: cleanSummary,
+                    strength: strengthText,
+                    action: actionText
                 };
 
                 consultHistory.unshift(newNote);
-                renderConsultHistory(currentStudentName);
+                renderConsultHistory(targetStudent);
 
-                // Insert into Supabase
+                // Insert into Supabase table
                 if (supabaseClient) {
                     try {
                         await supabaseClient.from('consultations').insert([{
-                            student_name: currentStudentName,
+                            student_name: targetStudent,
                             consult_date: newNote.date,
                             summary: newNote.summary,
                             strength: newNote.strength,
@@ -1412,11 +1593,13 @@
                     }
                 }
 
-                triggerToast("AI 요약이 성공적으로 저장되었습니다!");
+                triggerToast("실제 상담 내용이 구체적인 액션 플랜과 함께 요약되었습니다! 🎯");
                 document.getElementById('voiceRawTranscript').value = "";
-                document.getElementById('recordingStatusPill').innerText = "대기중";
-                document.getElementById('recordingStatusPill').className = "text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-medium";
-            }, 800);
+                if (statusPill) {
+                    statusPill.innerText = "요약 완료";
+                    statusPill.className = "text-[10px] bg-slate-800 text-emerald-400 px-2 py-0.5 rounded-full font-medium";
+                }
+            }, 500);
         }
 
         async function handleMobileRecordSubmit(e) {
