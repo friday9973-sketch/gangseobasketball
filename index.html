@@ -357,10 +357,10 @@
   <div id="toastBox" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 hidden bg-slate-900/95 border border-orange-500/60 text-white px-4 py-2.5 rounded-full text-xs font-bold shadow-xl"></div>
 
   <script>
+   // ==========================================
+    // 🔒 코치 비밀번호 잠금 로직 (기본 비번: 5555 고정)
     // ==========================================
-    // 🔒 코치 비밀번호 잠금 로직 (음성 상담 아이콘 전용)
-    // ==========================================
-    const COACH_PIN_KEY = 'gangseo_coach_pin_v1';
+    const COACH_PIN_KEY = 'gangseo_coach_pin_v5555';
 
     function requestVoiceConsultationLock() {
       if (isParentMode) {
@@ -377,18 +377,18 @@
 
     function verifyCoachPin() {
       const inputVal = document.getElementById('coachPinInput').value.trim();
-      const savedPin = localStorage.getItem(COACH_PIN_KEY) || '1234';
+      // 비밀번호를 5555로 고정
+      const savedPin = '5555';
 
       if (inputVal === savedPin) {
         document.getElementById('pinLockScreen').style.display = 'none';
         showToast('보안 잠금이 해제되었습니다.');
         switchTab('voice');
       } else {
-        showToast('비밀번호가 틀렸습니다. (기본: 1234)');
+        showToast('비밀번호가 틀렸습니다. (비밀번호: 5555)');
         document.getElementById('coachPinInput').value = '';
       }
     }
-
     // ==========================================
     // 1. 외부 연동 설정 (Kakao SDK & 배포 도메인)
     // ==========================================
