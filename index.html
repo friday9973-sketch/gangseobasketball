@@ -82,7 +82,7 @@
       <div id="coachHeaderControls" class="flex items-center gap-2">
         <button onclick="openStudentModal()" class="flex items-center gap-1.5 bg-slate-800/90 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-full text-xs font-bold text-slate-100 transition">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span id="activeStudentBadge">김지유</span>
+          <span id="activeStudentBadge">민지우</span>
           <span class="text-slate-400 text-[10px]">▾</span>
         </button>
         <button onclick="openRecordModal()" class="w-8 h-8 rounded-full bg-orange-500 hover:bg-orange-600 text-white font-bold text-base flex items-center justify-center shadow-lg shadow-orange-500/30 transition" title="새 측정 추가">
@@ -109,7 +109,7 @@
               </div>
               <div>
                 <div class="flex items-center gap-2">
-                  <h2 id="profileName" class="text-lg font-extrabold text-white">김지유</h2>
+                  <h2 id="profileName" class="text-lg font-extrabold text-white">민지우</h2>
                   <span id="profileGrade" class="text-[11px] px-2 py-0.5 rounded-md bg-orange-500/20 text-orange-300 font-semibold">가드 · 에이스</span>
                 </div>
                 <p class="text-xs text-slate-400 mt-0.5">최근 측정일: <span id="lastMeasureDate" class="text-slate-200 font-medium">오늘</span></p>
@@ -253,12 +253,12 @@
           <!-- 미리보기 카드 -->
           <div class="rounded-2xl bg-slate-900/95 border border-slate-800 p-4 space-y-2.5">
             <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-              <span class="text-xs font-extrabold text-orange-400">[강서초 농구부] <span id="sharePreviewName">김지유</span> 선수 성장 리포트</span>
+              <span class="text-xs font-extrabold text-orange-400">[강서초 농구부] <span id="sharePreviewName">민지우</span> 선수 성장 리포트</span>
               <span class="text-[10px] text-slate-400">학부모 전용 보안링크</span>
             </div>
             <p id="sharePreviewBody" class="text-xs text-slate-200 leading-relaxed whitespace-pre-line"></p>
             <div class="bg-slate-800/70 rounded-xl p-2.5 text-[11px] text-slate-300 space-y-1">
-              <div>🔗 전용 링크: <span id="sharePreviewUrl" class="text-sky-400 break-all">https://gangseobasketball.vercel.app?student=김지유&mode=parent</span></div>
+              <div>🔗 전용 링크: <span id="sharePreviewUrl" class="text-sky-400 break-all">https://gangseobasketball.vercel.app?student=민지우&mode=parent</span></div>
               <div class="text-[10px] text-emerald-400">🔒 학부모님이 링크 클릭 시 다른 학생 명단과 코치 메뉴는 자동 차단됩니다.</div>
             </div>
           </div>
@@ -419,10 +419,10 @@
     const STORAGE_KEY = 'gangseo_bball_state_v9';
 
     const defaultState = {
-      currentStudent: '김지유',
+      currentStudent: '민지우',
       students: {
-        '김지유': {
-          name: '김지유',
+        '민지우': {
+          name: '민지우',
           role: '가드 · 에이스',
           avatar: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=200&q=80',
           records: [
